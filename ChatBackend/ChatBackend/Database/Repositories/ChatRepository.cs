@@ -22,8 +22,7 @@ namespace ChatAppServer.Repositories
         {
             return await dbContext.UsersDialogs
                 .AsNoTracking()
-                .Include(x => x.Dialog.Messages.LastOrDefault())
-                .Where(x => x.UserId == userId && !x.Dialog.Messages[0].IsRead)
+                .Where(x => x.UserId == userId && !x.Dialog.Messages.OrderBy(x => x.DateCreate).LastOrDefault().IsRead)
                 .CountAsync();
         }
 
@@ -155,16 +154,17 @@ namespace ChatAppServer.Repositories
             return await dbContext.UsersDialogs
                 .AsNoTracking()
                 .Include(x => x.Dialog)
-                .Include(x => x.Dialog.Messages.LastOrDefault())
+                .ThenInclude(x => x.Messages)
                 .Where(x => x.UserId == userId)
                 .Select(x => new DialogModel
                 {
                     Id = x.DialogId,
                     Login = x.Dialog.Name,
-                    IsConfirm = x.Dialog.Messages[0].IsRead,
-                    DateTime = x.Dialog.Messages[0].DateCreate,
-                    LastMessage = x.Dialog.Messages[0].Content,
-                    LastUserId = x.Dialog.Messages[0].UserId
+                    Image = x.User.FacialImage,
+                    IsConfirm = x.Dialog.Messages.OrderBy(x => x.DateCreate).LastOrDefault().IsRead,
+                    DateTime = x.Dialog.Messages.OrderBy(x => x.DateCreate).LastOrDefault().DateCreate,
+                    LastMessage = x.Dialog.Messages.OrderBy(x => x.DateCreate).LastOrDefault().Content,
+                    LastUserId = x.Dialog.Messages.OrderBy(x => x.DateCreate).LastOrDefault().UserId
                 })
                 .ToListAsync();
         }

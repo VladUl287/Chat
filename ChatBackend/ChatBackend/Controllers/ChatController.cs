@@ -20,7 +20,13 @@ namespace ChatBackend.Controllers
             this.chat = chat;
         }
 
-        [HttpGet("{dialogId}")]
+        [HttpGet("count/{userId}")]
+        public async Task<int> GetCount([FromRoute] int userId)
+        {
+            return await chat.CountDialogs(userId);
+        }
+
+        [HttpGet("dialog/{dialogId}")]
         public async Task<IEnumerable<Message>> GetMessages([FromRoute] int dialogId)
         {
             return await chat.GetMessages(dialogId);
@@ -31,10 +37,12 @@ namespace ChatBackend.Controllers
         {
             var dialog = await chat.GetDialog(userId, toUserId);
 
+            await chat.CheckDialog(dialog.Id);
+
             return await chat.GetMessages(dialog.Id);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{userId}")]
         public async Task<IEnumerable<DialogModel>> GetDialogs([FromRoute] int userId)
         {
             return await chat.GetDialogs(userId);

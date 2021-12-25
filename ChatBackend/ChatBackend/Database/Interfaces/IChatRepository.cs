@@ -26,7 +26,7 @@ namespace ChatAppServer.Interfaces
         Task<Dialog> GetDialog(int userId, int toUserId);
 
         Task<IEnumerable<DialogModel>> GetDialogs(int id);
-
+        
         Task<IEnumerable<Message>> GetMessages(int dialogId);
     }
 }

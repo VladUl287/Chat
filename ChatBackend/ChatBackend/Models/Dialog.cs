@@ -10,6 +10,6 @@ namespace ChatAppModels
         public bool IsMultiple { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
-        public List<Message> Messages { get; set; }
+        public List<Message> Messages { get; set; } = new List<Message>();
     }
 }
