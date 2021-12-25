@@ -1,0 +1,47 @@
+.user-wrap {
+    grid-column: 2;
+}
+
+.user-card {
+    width: 100%;
+    margin-top: .2em;
+    padding: .3em .4em;
+    border-radius: .2em;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--main-bg);
+}
+
+.user-card .avatar {
+    width: 47px;
+    height: 47px;
+    border-radius: .2em;
+}
+
+.user-card .info {
+    margin-left: .4em;
+}
+
+.user-card .info p {
+    margin: 0;
+    user-select: none;
+    color: var(--main-bg);
+}
+
+.control-zone {
+    margin: 0 .3em 0 auto;
+}
+
+.control-zone button {
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    font-size: x-large;
+    color: var(--main-bg);
+    background-color: transparent;
+}
+
+.control-zone a {
+    font-size: x-large;
+    color: var(--main-bg);
+}

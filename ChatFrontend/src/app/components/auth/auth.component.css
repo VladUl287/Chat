@@ -1,0 +1,92 @@
+.container {
+    --color: #3C3D8F;
+
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container label {
+    width: 100%;
+    font-size: larger;
+    user-select: none;
+    color: var(--color);
+    display: block;
+    text-align: center;
+}
+
+.login-form,
+.register-form {
+    padding: 2em;
+    min-width: 25em;
+    background-color: #00000038;
+}
+
+form input[type=text] {
+    width: 100%;
+    border: none;
+    color: #fff;
+    padding: .5em .2em;
+    margin: 1.5em 0 0 0;
+    outline: none;
+    display: block;
+    border-bottom: 1px solid #495057;
+    background-color: transparent;
+}
+
+.login-form button,
+.register-form button,
+form input[type=submit] {
+    width: 100%;
+    padding: .7em 0;
+    user-select: none;
+    margin: 1.5em 0 0 0;
+    text-align: center;
+    border: none;
+    color: #e2e2e2;
+    text-transform: uppercase;
+    background-color: transparent;
+}
+
+form input[type=submit] {
+    background-color: var(--color);
+}
+
+form input[type=submit]:hover,
+form input[type=submit]:focus {
+    cursor: pointer;
+    background-color: #3c3d8fc0;
+}
+
+.login-form button,
+.register-form button {
+    border: 1px solid var(--color);
+    transition: background-color 200ms ease;
+}
+
+.login-form button:hover,
+.login-form button:focus,
+.register-form button:hover,
+.register-form button:focus {
+    cursor: pointer;
+    background-color: var(--color);
+}
+
+.image-zone {
+    display: flex;
+    align-items: flex-end;
+}
+
+.file-name {
+    margin: 0;
+    color: #fff;
+    margin: .5em 0 .5em .2em;
+}
+
+.register-form .select-image {
+    padding: .5em 1em;
+    width: fit-content;
+    border-radius: 1.5em;
+    text-transform: unset;
+}

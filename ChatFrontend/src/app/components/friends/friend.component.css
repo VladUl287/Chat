@@ -1,0 +1,90 @@
+.container {
+    --main-bg: #cdb4db;
+    --main-color: #fafafa;
+
+    margin: 0 25%;
+}
+
+.btn-select-wrap {
+    margin: .3em 0;
+    display: grid;
+    gap: .1em;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.btn-select-wrap button {
+    width: 100%;
+    cursor: pointer;
+    padding: .7em 0;
+    border-radius: .3em;
+    color: var(--main-bg);
+    background-color: transparent;
+    border: 1px solid var(--main-bg);
+    transition: 
+        color 100ms linear,
+        background-color 100ms ease;
+}
+
+.btn-select-wrap button:hover,
+.btn-select-wrap button:focus {
+    color: var(--main-color);
+    background-color: var(--main-bg);
+}
+
+.user-wrap {
+    grid-column: 2;
+}
+
+.user-card {
+    width: 100%;
+    margin-top: .2em;
+    padding: .3em .4em;
+    border-radius: .2em;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--main-bg);
+}
+
+.user-card .avatar {
+    width: 47px;
+    height: 47px;
+    border-radius: .2em;
+}
+
+.user-card .info {
+    margin-left: .4em;
+}
+
+.user-card .info p {
+    margin: 0;
+    user-select: none;
+    color: var(--main-bg);
+}
+
+.control-zone {
+    margin: 0 .3em 0 auto;
+}
+
+.control-zone button {
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: x-large;
+    color: var(--main-bg);
+    background-color: transparent;
+}
+
+.user-card a {
+    font-size: x-large;
+    color: var(--main-bg);
+}
+
+.user-card .accept {
+    margin-right: .2em;
+    cursor: pointer;
+    font-size: x-large;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    color: var(--main-bg);
+}

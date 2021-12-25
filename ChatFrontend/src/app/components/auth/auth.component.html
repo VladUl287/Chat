@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="login-form" *ngIf="isLogin;else reg">
+        <label>Войти</label>
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
+            <div>
+                <input type="text" formControlName="email" placeholder="Email">
+            </div>
+            <div>
+                <input type="text" formControlName="password" placeholder="Пароль">
+            </div>
+            <div>
+                <input type="submit" value="Войти">
+            </div>
+        </form>
+        <button (click)="tooggle()">Регистрация</button>
+    </div>
+    <ng-template #reg>
+        <div class="register-form">
+            <label>Регистрация</label>
+            <form [formGroup]="registerForm" (ngSubmit)="register()">
+                <div>
+                    <input type="text" formControlName="email" placeholder="Email">
+                </div>
+                <div>
+                    <input  type="text" formControlName="login" placeholder="Логин">
+                </div>
+                <div>
+                    <input  type="text" formControlName="password" placeholder="Пароль">
+                </div>
+                <div class="image-zone">
+                    <button (click)="fileInput.click()" class="select-image">Выбрать изображение</button>
+                    <input type="file" (change)="handleFileInput($event)" #fileInput hidden>
+                    <p class="file-name"></p>
+                </div>
+                <div>
+                    <input type="submit" value="Зарегистрироваться">
+                </div>
+            </form>
+            <button (click)="tooggle()">Войти</button>
+        </div>
+    </ng-template>
+</div>

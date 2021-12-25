@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="messages-wrap">
+        <div class="message-zone">
+            <div class="messages-bottom">
+                <div *ngFor="let message of messages; let i = index" class="messages">
+                    <div *ngIf="message.userId != userId" class="left">
+                        <p>{{message.content}}</p>
+                        <p>{{message.dateCreate | date: 'HH:mm dd/MM/yyyy' }}</p>
+                    </div>
+                    <div *ngIf="message.userId == userId" class="right">
+                        <p>{{message.content}}</p>
+                        <p>{{message.dateCreate | date: 'HH:mm dd/MM/yyyy' }}</p>
+                    </div>
+                    <div *ngIf="i == messages.length - 1" hidden>{{scrollToBottom()}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="send-zone">
+            <textarea type="text" [(ngModel)]="messageText"></textarea>
+            <div>
+                <button (click)="send()"><i class='bx bx-send bx-flip-vertical' ></i></button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+<div *ngFor="let user of users$ | async" class="user-wrap">
+    <div class="user-card">
+        <img [src]="user.image" class="avatar" alt="">
+        <div class="info">
+            <p>{{user.login}}</p>
+            <p>{{user.email}}</p>
+        </div>
+        <div class="control-zone">
+            <button (click)="addAsFriend(user)" *ngIf="!user.isFriend">
+                <i class='bx bx-add-to-queue'></i>
+            </button>
+            <a [routerLink]="'../chat/' + user.id">
+                <i class='bx bx-chat'></i>
+            </a>
+        </div>
+    </div>
+</div>

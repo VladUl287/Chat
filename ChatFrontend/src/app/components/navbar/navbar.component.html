@@ -1,0 +1,43 @@
+<div class="nav-bar ">
+    <div class="logo">
+        <div class="logo-name">
+            <i class='bx bxs-chat'></i>
+            <p>Chat</p>
+        </div>
+        <i class='bx bx-menu' id="menu-btn"></i>
+    </div>
+    <nav>
+        <ul>
+            <li>
+                <a routerLink="dialogues">
+                    <i class='bx bx-message-square-dots'></i>
+                    <span>
+                        Сообщения
+                        <p class="dialogs-count-small" *ngIf="count > 0">{{count}}</p>
+                    </span>
+                </a>
+                <span>Сообщения</span>
+            </li>
+            <li>
+                <a routerLink="friends">
+                    <i class='bx bxs-user-detail'></i>
+                    <span>Собеседники</span>
+                </a>
+                <span>Собеседники</span>
+            </li>
+            <li routerLink="">
+                <a>
+                    <i class='bx bxs-user'></i>
+                    <span>Пользователи</span>
+                </a>
+                <span>Пользователи</span>
+            </li>
+            <li>
+                <a routerLink="" (click)="logout()" class="account account-login">
+                    <span>{{email}}</span>
+                    <i class='bx bx-log-out'></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
