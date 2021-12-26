@@ -17,6 +17,8 @@ namespace ChatAppServer.Interfaces
 
         Task DeleteMessage(Message message);
 
+        Task DeleteMessages(int[] arrId);
+
         Task<Dialog> CreateDialog(Dialog dialog);
 
         Task<UserDialog[]> GetUsersDialog(int dialogId);

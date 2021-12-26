@@ -90,6 +90,7 @@ namespace ChatAppServer.Controllers
             {
                 using var memoryStream = new MemoryStream();
                 await register.ImageFile.CopyToAsync(memoryStream);
+                memoryStream.Seek(0, SeekOrigin.Begin);
                 using var img = await Image.LoadAsync(memoryStream);
                 using var memory = new MemoryStream();
                 img.Mutate(x => x.Resize(80, 60, KnownResamplers.Lanczos3));

@@ -35,18 +35,20 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.hub.connection.on("ReceiveMessage", (message: Message) => {
       this.messages.push(message);
 
-      // if (this.userId != message.userId) {
-      //   this.hub.checkDialog(this.userId, this.toId);
-      //   this.hub.countDialogs(this.userId);
-      // }
+      if (this.userId != message.userId) {
+
+        this.chatService.getCount(this.userId);
+        // this.hub.checkDialog(this.userId, this.toId);
+        // this.hub.countDialogs(this.userId);
+      }
       this.cd.detectChanges();
     });
 
     this.userId = this.tokenService.token.id;
     this.chatService.getDialog(this.userId, this.toId).toPromise()
       .then((data: Message[]) => {
-        console.log(data);
         // this.hub.countDialogs(this.userId);
+        this.chatService.getCount(this.userId);
         this.messages = data;
         this.cd.detectChanges();
       });
@@ -68,6 +70,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.hub.connection.on("ReceiveMessage", (message: Message) => {
       if (message.userId != this.userId) {
         // this.hub.countDialogs(this.userId);
+        this.chatService.getCount(this.userId);
       }
     });
   }

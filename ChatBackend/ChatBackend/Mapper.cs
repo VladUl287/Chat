@@ -9,6 +9,7 @@ namespace ChatBackend
         public Mapper()
         {
             CreateMap<Message, MessageModel>().ReverseMap();
+            CreateMap<Dialog, CreateDialogModel>().ReverseMap();
             CreateMap<User, UserModel>().ReverseMap();
             CreateMap<User, AuthModel>().ReverseMap();
             CreateMap<User, RegisterModel>().ReverseMap();

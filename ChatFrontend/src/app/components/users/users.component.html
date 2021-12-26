@@ -1,6 +1,6 @@
 <div *ngFor="let user of users$ | async" class="user-wrap">
     <div class="user-card">
-        <img [src]="user.image" class="avatar" alt="">
+        <img [src]="user.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
         <div class="info">
             <p>{{user.login}}</p>
             <p>{{user.email}}</p>

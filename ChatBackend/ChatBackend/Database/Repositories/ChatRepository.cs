@@ -51,9 +51,21 @@ namespace ChatAppServer.Repositories
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task DeleteMessages(int[] arrId)
+        {
+            var messagess = await dbContext.Messages
+                .Where(x => arrId.Contains(x.Id))
+                .ToListAsync();
+
+            dbContext.Messages.RemoveRange(messagess);
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task<UserDialog[]> GetUsersDialog(int dialogId)
         {
-            return await dbContext.UsersDialogs.Where(x => x.DialogId == dialogId).ToArrayAsync();
+            return await dbContext.UsersDialogs
+                .Where(x => x.DialogId == dialogId)
+                .ToArrayAsync();
         }
 
         public async Task<Dialog> CreateDialog(Dialog dialog)
@@ -129,16 +141,20 @@ namespace ChatAppServer.Repositories
 
         public async Task CheckDialog(int id)
         {
-            var message = await dbContext.Messages
-                .Where(x => x.DialogId == id && !x.IsRead)
-                .ToListAsync();
+            await dbContext.Database
+                .ExecuteSqlInterpolatedAsync($"UPDATE [Messages] SET [IsRead] = 1 WHERE [DialogId] = {id} AND [IsRead] = 0");
+            //await dbContext.Database.ExecuteSqlRawAsync("UPDATE [Messages] SET [IsRead] = 1 WHERE [DialogId] = {0} AND [IsRead] = 0", id);
 
-            for (int i = 0; i < message.Count; i++)
-            {
-                message[i].IsRead = true;
-            }
+            //var message = await dbContext.Messages
+            //    .Where(x => x.DialogId == id && !x.IsRead)
+            //    .ToListAsync();
 
-            await dbContext.SaveChangesAsync();
+            //for (int i = 0; i < message.Count; i++)
+            //{
+            //    message[i].IsRead = true;
+            //}
+
+            //await dbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Message>> GetMessages(int dialogId)
@@ -151,22 +167,62 @@ namespace ChatAppServer.Repositories
 
         public async Task<IEnumerable<DialogModel>> GetDialogs(int userId)
         {
-            return await dbContext.UsersDialogs
-                .AsNoTracking()
-                .Include(x => x.Dialog)
-                .ThenInclude(x => x.Messages)
-                .Where(x => x.UserId == userId)
+            //var dialogs = await dbContext.UsersDialogs
+            //    .Where(x => x.UserId == userId)
+            //    .Select(x => new
+            //    {
+            //        UserDialog = x,
+            //        LastMessage = x.Dialog.Messages.OrderByDescending(x => x.DateCreate).FirstOrDefault()
+            //    })
+            //    .Where(x => x.LastMessage != null)
+            //    .Select(x => new DialogModel
+            //    {
+            //        Id = x.UserDialog.DialogId,
+            //        Login = x.UserDialog.Dialog.Name,
+            //        Image = x.UserDialog.User.FacialImage,
+            //        IsConfirm = x.LastMessage.IsRead,
+            //        DateTime = x.LastMessage.DateCreate,
+            //        LastMessage = x.LastMessage.Content,
+            //        LastUserId = x.LastMessage.UserId
+            //    })
+            //    .ToListAsync();
+
+            var dialogs = (
+                    from x in dbContext.UsersDialogs
+                    where x.UserId == userId
+                    select new
+                    {
+                        Id = x.DialogId,
+                        Login = x.Dialog.Name,
+                        Image = x.User.FacialImage,
+                        LastMessage = (from d in x.Dialog.Messages
+                                       orderby d.DateCreate
+                                       select new
+                                       {
+                                           IsConfirm = d.IsRead,
+                                           d.DateCreate,
+                                           d.Content,
+                                           d.UserId
+                                       }).LastOrDefault()
+                    }
+                ).AsEnumerable()
+                .Where(x => x.LastMessage != null)
                 .Select(x => new DialogModel
                 {
-                    Id = x.DialogId,
-                    Login = x.Dialog.Name,
-                    Image = x.User.FacialImage,
-                    IsConfirm = x.Dialog.Messages.OrderBy(x => x.DateCreate).LastOrDefault().IsRead,
-                    DateTime = x.Dialog.Messages.OrderBy(x => x.DateCreate).LastOrDefault().DateCreate,
-                    LastMessage = x.Dialog.Messages.OrderBy(x => x.DateCreate).LastOrDefault().Content,
-                    LastUserId = x.Dialog.Messages.OrderBy(x => x.DateCreate).LastOrDefault().UserId
-                })
-                .ToListAsync();
+                    Id = x.Id,
+                    Login = x.Login,
+                    Image = x.Image,
+                    DateTime = x.LastMessage.DateCreate,
+                    LastMessage = x.LastMessage.Content,
+                    LastUserId = x.LastMessage.UserId
+                });
+
+            return dialogs;
+        }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await dbContext.SaveChangesAsync();
         }
     }
 }

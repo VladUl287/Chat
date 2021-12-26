@@ -1,5 +1,3 @@
-import { User } from "./user";
-
 export class Dialog {
     constructor(
         public id: number,

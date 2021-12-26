@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@
 import { Router } from '@angular/router';
 import { Message } from 'src/app/models/message';
 import { UserToken } from 'src/app/models/userToken';
+import { ChatService } from 'src/app/services/chat.service';
 import { HubService } from 'src/app/services/hub.service';
 import { TokenService } from 'src/app/services/token.service';
 
@@ -18,6 +19,7 @@ export class NavbarComponent implements OnInit {
   constructor(
     private router: Router,
     private hub: HubService,
+    private chat: ChatService,
     private tokenService: TokenService,
     private cd: ChangeDetectorRef) { }
 
@@ -28,14 +30,14 @@ export class NavbarComponent implements OnInit {
 
     this.hub.connection.on("ReceiveMessage", (message: Message) => {
       if (message.userId != userId) {
-        this.hub.countDialogs(userId);
+        this.chat.getCount(userId);
       }
     });
     this.hub.connection.on("ReceiveCountDialogs", (count: number) => {
       this.count = count;
       this.cd.detectChanges();
     });
-    this.hub.countDialogs(userId);
+    this.chat.getCount(userId);
 
     let btn = document.querySelector('#menu-btn');
     let navBar = document.querySelector('.nav-bar');
