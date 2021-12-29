@@ -14,14 +14,26 @@ export class ChatService {
   constructor(private http: HttpClient) {}
 
   getCount(userId: number): Observable<number> {
-    return this.http.get<number>(this.apiUrl + `/api/chat/count/${userId}`);
+    return this.http.get<number>(`${this.apiUrl}/api/chat/count/${userId}`);
   }
 
-  getDialog(fromId: number, toId: number): Observable<Message[]> {
-    return this.http.get<Message[]>(this.apiUrl + `/api/chat/${fromId}/${toId}`);
+  getDialog(userId: number, toUserId: number): Observable<Dialog> {
+    return this.http.get<Dialog>(`${this.apiUrl}/api/chat/dialog/${userId}/${toUserId}`);
+  }
+
+  getMessages(dialogId: number): Observable<Message[]> {
+    return this.http.get<Message[]>(`${this.apiUrl}/api/chat/messages/${dialogId}`);
   }
 
   getDialogs(userId: number): Observable<Dialog[]> {
-    return this.http.get<Dialog[]>(this.apiUrl + `/api/chat/${userId}`);
+    return this.http.get<Dialog[]>(`${this.apiUrl}/api/chat/dialogs/${userId}`);
+  }
+
+  checkDialog(dialogId: number): Observable<null> {
+    return this.http.get<null>(`${this.apiUrl}/api/chat/dialog/check/${dialogId}`);
+  }
+
+  createDialog(dialog: any): Observable<null> {
+    return this.http.post<null>(`${this.apiUrl}/api/chat/create/dialog`, dialog);
   }
 }

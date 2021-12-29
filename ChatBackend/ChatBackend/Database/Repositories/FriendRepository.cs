@@ -55,12 +55,9 @@ namespace ChatAppServer.Repositories
                 })
                 .ToListAsync();
 
-            var result = new List<UserModel>(friends.Count + friends2.Count);
+            friends.AddRange(friends2);
 
-            result.AddRange(friends);
-            result.AddRange(friends2);
-
-            return result;
+            return friends;
         }
 
         public async Task<IEnumerable<UserModel>> GetIncoming(int id)

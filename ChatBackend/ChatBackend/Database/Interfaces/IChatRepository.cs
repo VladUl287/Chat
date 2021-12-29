@@ -15,13 +15,13 @@ namespace ChatAppServer.Interfaces
 
         Task CreateMessage(Message message);
 
-        Task DeleteMessage(Message message);
+        void DeleteMessage(Message message);
 
         Task DeleteMessages(int[] arrId);
 
         Task<Dialog> CreateDialog(Dialog dialog);
 
-        Task<UserDialog[]> GetUsersDialog(int dialogId);
+        Task<int[]> GetUsersDialog(int dialogId);
 
         Task AddUsersDialog(int[] usersId, int dialogId);
 
@@ -29,6 +29,7 @@ namespace ChatAppServer.Interfaces
 
         Task<IEnumerable<DialogModel>> GetDialogs(int id);
         
-        Task<IEnumerable<Message>> GetMessages(int dialogId);
+        Task<List<Message>> GetMessages(int dialogId);
+        Task<int> SaveChangesAsync();
     }
 }

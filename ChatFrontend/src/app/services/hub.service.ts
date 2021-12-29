@@ -49,19 +49,19 @@ export class HubService {
   }
 
   sendMessage(message: MessageModel) {
-    this.connection.invoke("SendMessage", message);
-    // if (this.isConnect.value) {
-    //   this.connection.invoke("SendMessage", message)
-    // }
-    // else {
-    //   this.isConnect.subscribe(
-    //     (data: boolean) => {
-    //       if (data) {
-    //         this.connection.invoke("SendMessage", message);
-    //         this.isConnect.complete();
-    //       }
-    //     });
-    // }
+    // this.connection.invoke("SendMessage", message);
+    if (this.isConnect.value) {
+      this.connection.invoke("SendMessage", message)
+    }
+    else {
+      this.isConnect.subscribe(
+        (data: boolean) => {
+          if (data) {
+            this.connection.invoke("SendMessage", message);
+            this.isConnect.complete();
+          }
+        });
+    }
   }
 
   countDialogs(userId: number): void {
@@ -94,15 +94,15 @@ export class HubService {
     }
   }
 
-  checkDialog(id: number, toId: number): void {
+  checkDialog(dialogId: number): void {
     if (this.isConnect.value) {
-      this.connection.invoke("CheckDialog", id, toId);
+      this.connection.invoke("CheckDialog", dialogId);
     }
     else {
       this.isConnect.subscribe(
         (data: boolean) => {
           if (data) {
-            this.connection.invoke("CheckDialog", id, toId);
+            this.connection.invoke("CheckDialog", dialogId);
             this.isConnect.complete();
           }
         });

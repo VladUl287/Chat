@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
 import { Message } from 'src/app/models/message';
 import { MessageModel } from 'src/app/models/messageModel';
 import { ChatService } from 'src/app/services/chat.service';
@@ -14,19 +15,20 @@ import { TokenService } from 'src/app/services/token.service';
 })
 export class ChatComponent implements OnInit, OnDestroy {
   public messages: Array<Message> = new Array<Message>();
+  public messages$: Observable<Array<Message>> = new Observable<Array<Message>>();
   public messageText: string = '';
-  private toId: number = 0;
+  private dialogId: number = 0;
   public userId: number = 0;
 
   constructor(
     actRoute: ActivatedRoute,
     private hub: HubService,
+    private cd: ChangeDetectorRef,
     private chatService: ChatService,
-    private tokenService: TokenService,
-    private cd: ChangeDetectorRef) {
+    private tokenService: TokenService) {
     actRoute.params.subscribe(
       data => {
-        this.toId = +data.id;
+        this.dialogId = +data.id;
       }
     );
   }
@@ -38,25 +40,25 @@ export class ChatComponent implements OnInit, OnDestroy {
       if (this.userId != message.userId) {
 
         this.chatService.getCount(this.userId);
-        // this.hub.checkDialog(this.userId, this.toId);
-        // this.hub.countDialogs(this.userId);
+        this.hub.checkDialog(this.dialogId);
+        // this.chatService.checkDialog(this.dialogId);
       }
-      this.cd.detectChanges();
+      // this.cd.detectChanges();
     });
 
     this.userId = this.tokenService.token.id;
-    this.chatService.getDialog(this.userId, this.toId).toPromise()
+    // this.messages$ = this.chatService.getMessages(this.dialogId);
+    // this.chatService.getCount(this.userId);
+    this.chatService.getMessages(this.dialogId).toPromise()
       .then((data: Message[]) => {
-        // this.hub.countDialogs(this.userId);
         this.chatService.getCount(this.userId);
         this.messages = data;
         this.cd.detectChanges();
       });
-
   }
 
   send(): void {
-    let message: MessageModel = new MessageModel(this.messageText, this.userId, 1);
+    let message: MessageModel = new MessageModel(this.messageText, this.userId, this.messages[0].dialogId);
     this.hub.sendMessage(message);
   }
 
@@ -69,7 +71,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.hub.connection.off("ReceiveMessage");
     this.hub.connection.on("ReceiveMessage", (message: Message) => {
       if (message.userId != this.userId) {
-        // this.hub.countDialogs(this.userId);
         this.chatService.getCount(this.userId);
       }
     });

@@ -1,7 +1,10 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
+import { Dialog } from 'src/app/models/dialog';
 import { User } from 'src/app/models/user';
-import { HubService } from 'src/app/services/hub.service';
+import { ChatService } from 'src/app/services/chat.service';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-users',
@@ -12,10 +15,17 @@ import { HubService } from 'src/app/services/hub.service';
 export class UsersComponent {
   @Input() users$: ReplaySubject<Array<User>> = new ReplaySubject<Array<User>>();
   
-  constructor(private hub: HubService) { }
+  constructor(
+    private router: Router,
+    private chat: ChatService, 
+    private tokenService: TokenService) { }
 
-  addAsFriend(user: User): void {
-    user.isFriend = true;
-    this.hub.addFriend(user.id);
+  getDialog(toUserId: number): void {
+    let userId = this.tokenService.token.id;
+    this.chat.getDialog(userId, toUserId).subscribe(
+      (data: Dialog) => {
+        this.router.navigateByUrl("chat/" + data.id);
+      }
+    );
   }
 }

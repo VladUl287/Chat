@@ -31,23 +31,6 @@ namespace ChatAppServer.Repositories
 
         public async Task<IEnumerable<UserModel>> GetAll(int id)
         {
-            var friends = await dbContext.Friends
-               .AsNoTracking()
-               .Where(x => x.UserId == id)
-               .Select(x => x.ToUserId)
-               .ToListAsync();
-
-            var friends2 = await dbContext.Friends
-                .AsNoTracking()
-                .Where(x => x.ToUserId == id)
-                .Select(x => x.UserId)
-                .ToListAsync();
-
-            var allFriends = new List<int>(friends.Count + friends2.Count);
-
-            allFriends.AddRange(friends);
-            allFriends.AddRange(friends2);
-
             var result = await dbContext.Users
                 .AsNoTracking()
                 .Select(e => new UserModel
@@ -60,57 +43,24 @@ namespace ChatAppServer.Repositories
                 .Where(e => e.Id != id)
                 .ToListAsync();
 
-            for (int i = 0; i < allFriends.Count; i++)
-            {
-                var index = result.FindIndex(x => x.Id == allFriends[i]);
-                if (index > -1)
-                {
-                    result[index].IsFriend = true;
-                }
-            }
-
             return result;
         }
 
         public async Task<IEnumerable<UserModel>> Search(int id, string login)
         {
-            var friends = await dbContext.Friends
-              .AsNoTracking()
-              .Where(x => x.UserId == id)
-              .Select(x => x.ToUserId)
-              .ToListAsync();
-
-            var friends2 = await dbContext.Friends
-                .AsNoTracking()
-                .Where(x => x.ToUserId == id)
-                .Select(x => x.UserId)
-                .ToListAsync();
-
-            var allFriends = new List<int>(friends.Count + friends2.Count);
-
-            allFriends.AddRange(friends);
-            allFriends.AddRange(friends2);
-
             var result = await dbContext.Users
                 .AsNoTracking()
-                .Select(e => new UserModel
+                .Select(x => new UserModel
                 {
-                    Id = e.Id,
-                    Email = e.Email,
-                    Login = e.Login,
-                    Image = e.FacialImage
+                    Id = x.Id,
+                    Email = x.Email,
+                    Login = x.Login,
+                    Image = x.FacialImage
                 })
-                .Where(e => e.Login.Contains(login))
+                .Where(x => x.Login.StartsWith(login) && x.Id != id)
                 .ToListAsync();
-
-            for (int i = 0; i < allFriends.Count; i++)
-            {
-                var index = result.FindIndex(x => x.Id == allFriends[i]);
-                if (index > -1)
-                {
-                    result[index].IsFriend = true;
-                }
-            }
+                //.Where(e => e.Login.Contains(login))
+                //.Where(e => EF.Functions.Like(e.Login, "[aei%"))
 
             return result;
         }

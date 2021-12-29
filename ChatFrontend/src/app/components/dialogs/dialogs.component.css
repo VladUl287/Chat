@@ -1,0 +1,143 @@
+.wrapper {
+    --main-color: #fafafa;
+    --main-bg: #cdb4db;
+}
+
+.container {
+    margin: 0 25%;
+    position: relative;
+}
+
+.create-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.create-zone {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #212529;
+    border-radius: .4em;
+    padding: .3em .4em;
+    width: 45%;
+    height: 50%;
+}
+
+.create-zone * {
+    font-size: 11pt;
+    user-select: none;
+    color: var(--main-color);
+}
+
+.create-zone > div {
+    margin: 0 0 .6em 0;
+}
+
+.create-zone p {
+    margin: .3em .1em;
+}
+
+.controle-zone .close-btn {
+    cursor: pointer;
+    font-size: 9pt;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    border: none;
+    background-color: transparent;
+}
+
+.create-zone input[type=text] {
+    border: 1px solid gray;
+    padding: .3em;
+    width: 100%;
+    border-radius: .2em;
+    background-color: transparent;
+}
+
+.user-card {
+    width: 100%;
+    margin-top: .2em;
+    padding: .2em .3em;
+    border-radius: .2em;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--main-bg);
+}
+
+.user-card * {
+    user-select: none;
+}
+
+.user-card .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: .2em;
+}
+
+.user-card p {
+    margin: 0;
+    padding-left: .4em;
+    color: var(--main-bg);
+}
+
+.dialogs-wrap {
+    grid-column: 2;
+    user-select: none;
+}
+
+.dialogs-wrap .isConfirm .dialog {
+    color: var(--main-color);
+    border-color: #4545b1c0;
+    background-color: #4545b1c0;
+}
+
+.dialog {
+    display: flex;
+    margin: .2em 0;
+    align-items: center;
+    border-radius: .2em;
+    position: relative;
+    padding: .3em .4em;
+    color: var(--main-bg);
+    text-decoration: none;
+    border: 1px solid var(--main-bg);
+    transition: color 100ms linear, background-color 100ms linear;
+}
+
+.dialog:hover {
+    cursor: pointer;
+    color: var(--main-color);
+    background-color: var(--main-bg);
+}
+
+.dialog .info {
+    margin: 0 0 0 .5em;
+}
+
+.dialog .info p {
+    margin: 0;
+}
+
+.dialog .info p:last-child {
+    margin: .3em 0 0 0;
+}
+
+.dialog .time {
+    position: absolute;
+    top: 0;
+    right: .3em;
+    font-size: small;
+}
+
+.dialog .avatar {
+    width: 47px;
+    height: 47px;
+}

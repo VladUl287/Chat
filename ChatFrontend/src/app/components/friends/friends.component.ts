@@ -2,7 +2,6 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { User } from 'src/app/models/user';
 import { UserToken } from 'src/app/models/userToken';
-import { HubService } from 'src/app/services/hub.service';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -18,7 +17,6 @@ export class FriendsComponent implements OnInit {
   isIncoming: boolean = false;
 
   constructor(
-    private hub: HubService,
     tokenService: TokenService,
     private userServices: UserService) {
     this.token = tokenService.token;

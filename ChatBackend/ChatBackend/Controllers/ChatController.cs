@@ -29,23 +29,29 @@ namespace ChatBackend.Controllers
             return await chat.CountDialogs(userId);
         }
 
-        [HttpGet("dialog/{dialogId}")]
-        public async Task<IEnumerable<Message>> GetMessages([FromRoute] int dialogId)
-        {
-            return await chat.GetMessages(dialogId);
-        }
-
-        [HttpGet("{userId}/{toUserId}")]
-        public async Task<IEnumerable<Message>> GetMessages(int userId, int toUserId)
+        [HttpGet("dialog/{userId}/{toUserId}")]
+        public async Task<Dialog> GetDialog(int userId, int toUserId)
         {
             var dialog = await chat.GetDialog(userId, toUserId);
 
-            await chat.CheckDialog(dialog.Id);
-
-            return await chat.GetMessages(dialog.Id);
+            return dialog;
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("dialog/check/{dialogId}")]
+        public async Task CheckDialog(int dialogId)
+        {
+            await chat.CheckDialog(dialogId);
+        }
+
+        [HttpGet("messages/{dialogId}")]
+        public async Task<IEnumerable<Message>> GetMessages([FromRoute] int dialogId)
+        {
+            await chat.CheckDialog(dialogId);
+
+            return await chat.GetMessages(dialogId);
+        }
+
+        [HttpGet("dialogs/{userId}")]
         public async Task<IEnumerable<DialogModel>> GetDialogs([FromRoute] int userId)
         {
             return await chat.GetDialogs(userId);
@@ -60,6 +66,7 @@ namespace ChatBackend.Controllers
             var created = await chat.CreateDialog(dialog);
 
             await chat.AddUsersDialog(createDialog.UsersId, created.Id);
+            await chat.SaveChangesAsync();
 
             return Ok();
         }

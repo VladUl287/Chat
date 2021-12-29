@@ -13,7 +13,7 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   getUsers(id: number): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl + '/api/user/all/' + id);
+    return this.http.get<User[]>(`${this.apiUrl}/api/user/all/${id}`);
   }
 
   accept(id: number, fromId: number): Observable<null> {
@@ -21,18 +21,18 @@ export class UserService {
   }
 
   getFriends(id: number): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl + '/api/friend/' + id);
+    return this.http.get<User[]>(`${this.apiUrl}/api/friend/${id}`);
   }
 
   getOutgoing(id: number): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl + '/api/friend/outgoing/' + id);
+    return this.http.get<User[]>(`${this.apiUrl}/api/friend/outgoing/${id}`);
   }
 
   getIncoming(id: number): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl + '/api/friend/incoming/' + id);
+    return this.http.get<User[]>(`${this.apiUrl}/api/friend/incoming/${id}`);
   }
 
-  searchUsers(user: string): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl + '/api/user/search/' + user);
+  search(login: string): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/api/user/search/${login}`);
   }
 }

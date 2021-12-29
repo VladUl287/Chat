@@ -59,3 +59,4 @@ C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swa
 C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.MvcApplicationPartsAssemblyInfo.cs
+C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.csproj.AssemblyReference.cache

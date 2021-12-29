@@ -9,9 +9,10 @@ import { AuthInterceptor } from './guard/auth.interceptor';
 import { ChatComponent } from './components/chat/chat.component';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { DialoguesComponent } from './components/dialogues/dialogues.component';
+import { DialogsComponent } from './components/dialogs/dialogs.component';
 import { FriendsComponent } from './components/friends/friends.component';
 import { UsersComponent } from './components/users/users.component';
+import { UserPageComponent } from './components/user-page/user-page.component';
 
 @NgModule({
   declarations: [
@@ -19,9 +20,10 @@ import { UsersComponent } from './components/users/users.component';
     MainComponent,
     ChatComponent,
     NavbarComponent,
-    DialoguesComponent,
+    DialogsComponent,
     FriendsComponent,
-    UsersComponent
+    UsersComponent,
+    UserPageComponent
   ],
   imports: [
     BrowserModule,

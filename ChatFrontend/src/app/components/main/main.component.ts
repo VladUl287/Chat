@@ -41,7 +41,7 @@ export class MainComponent implements OnInit {
       let load = document.querySelector('.load');
       load?.classList.add('loading');
 
-      this.userService.searchUsers(this.searchUser).toPromise()
+      this.userService.search(this.searchUser).toPromise()
         .then((data: User[]) => {
           this.repUsers$.next(data)
         });

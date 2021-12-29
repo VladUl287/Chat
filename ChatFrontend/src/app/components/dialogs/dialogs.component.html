@@ -1,0 +1,52 @@
+<div class="wrapper">
+    <div class="container">
+        <div class="controls">
+            <button (click)="createDialog()">+</button>
+        </div>
+        <div class="dialogs-wrap">
+            <div *ngFor="let dialog of dialogues | async" 
+             [ngClass]="{'isConfirm': dialog.lastUserId != userId && !dialog.isConfirm}">
+                <a *ngIf="dialog" [routerLink]="'../chat/' + dialog.id" class="dialog">
+                    <img [src]="dialog.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
+                    <div class="info">
+                        <p>{{dialog.login}}</p>
+                        <p>Сообщение: {{dialog.lastMessage}}</p>
+                    </div>
+                    <span class="time">{{dialog.dateTime | date: 'HH:mm dd/MM/yyyy'}}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="create-wrap" *ngIf="createShow">
+        <div class="create-zone">
+            <div class="controle-zone">
+                <p>Создание диалога</p>
+                <button class="close-btn" (click)="closeDialog()">X</button>
+            </div>
+            <div>
+                <input type="text" placeholder="название диалога">
+            </div>
+            <div>
+                <input type="file">
+            </div>
+            <div class="user-selected-zone" *ngIf="friendsDialog.length > 0">
+                <p>Пользователи добавленные в диалог.</p>
+                <div *ngFor="let friend of friendsDialog">
+                    <div class="user-card" (click)=removeUser(friend)>
+                        <img [src]="friend.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
+                        <p>{{friend.login}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="users-select-zone">
+                <p>Выберите пользователей для добавления в диалог.</p>
+                <div *ngFor="let friend of friends$ | async">
+                    <div class="user-card" (click)=addUser(friend)>
+                        <img [src]="friend.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
+                        <p>{{friend.login}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

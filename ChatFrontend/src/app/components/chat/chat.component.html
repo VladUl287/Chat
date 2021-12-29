@@ -13,6 +13,17 @@
                     </div>
                     <div *ngIf="i == messages.length - 1" hidden>{{scrollToBottom()}}</div>
                 </div>
+                <!-- <div *ngFor="let message of messages$ | async; let i = index" class="messages">
+                    <div *ngIf="message.userId != userId" class="left">
+                        <p>{{message.content}}</p>
+                        <p>{{message.dateCreate | date: 'HH:mm dd/MM/yyyy' }}</p>
+                    </div>
+                    <div *ngIf="message.userId == userId" class="right">
+                        <p>{{message.content}}</p>
+                        <p>{{message.dateCreate | date: 'HH:mm dd/MM/yyyy' }}</p>
+                    </div>
+                    <div *ngIf="i == messages.length - 1" hidden>{{scrollToBottom()}}</div>
+                </div> -->
             </div>
         </div>
         <div class="send-zone">

@@ -35,13 +35,14 @@ namespace ChatBackend.Hubs
             var usersDialog = await chatRepository.GetUsersDialog(message.DialogId);
             for (int i = 0; i < usersDialog.Length; i++)
             {
-                if (_connections.TryGetValue(usersDialog[i].UserId, out string connectionId))
+                if (_connections.TryGetValue(usersDialog[i], out string connectionId))
                 {
                     await Clients.Client(connectionId).SendAsync("ReceiveMessage", message);
                 }
             }
 
             await chatRepository.CreateMessage(message);
+            await chatRepository.SaveChangesAsync();
         }
 
         public async Task CheckDialog(int dialogId)
