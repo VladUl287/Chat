@@ -13,6 +13,8 @@ namespace ChatAppServer.Interfaces
 
         Task<User> Get(int id);
 
+        Task<UserPageModel> Get(int userId, int id);
+
         Task Delete(User user);
     }
 }

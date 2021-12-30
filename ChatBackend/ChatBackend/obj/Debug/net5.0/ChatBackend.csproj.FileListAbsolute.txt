@@ -22,6 +22,11 @@ C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Microsoft.IdentityModel.Lo
 C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
+C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Microsoft.OpenApi.dll
+C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\SixLabors.ImageSharp.dll
+C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\System.Configuration.ConfigurationManager.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
@@ -43,6 +48,7 @@ C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.GeneratedMSBui
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.AssemblyInfoInputs.cache
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.AssemblyInfo.cs
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.csproj.CoreCompileInputs.cache
+C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.MvcApplicationPartsAssemblyInfo.cs
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.MvcApplicationPartsAssemblyInfo.cache
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\staticwebassets\ChatBackend.StaticWebAssets.Manifest.cache
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\staticwebassets\ChatBackend.StaticWebAssets.xml
@@ -53,10 +59,3 @@ C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ref\ChatBackend.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.pdb
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.genruntimeconfig.cache
-C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\SixLabors.ImageSharp.dll
-C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Microsoft.OpenApi.dll
-C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
-C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.MvcApplicationPartsAssemblyInfo.cs
-C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.csproj.AssemblyReference.cache

@@ -26,7 +26,62 @@ namespace ChatAppServer.Repositories
 
         public async Task<User> Get(int id)
         {
-            return await dbContext.Users.FindAsync(id);
+            var user = await dbContext.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return user;
+        }
+
+        public async Task<UserPageModel> Get(int authId, int id)
+        {
+            var user = await dbContext.Users
+                .AsNoTracking()
+                .Select(x => new UserPageModel
+                {
+                    Id = x.Id,
+                    Email = x.Email,
+                    Image = x.Image,
+                    Login = x.Login
+                })
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (user is not null)
+            {
+                var exists = await dbContext.Friends
+                    .FirstOrDefaultAsync(x => x.UserId == authId && x.ToUserId == id);
+
+                if (exists is not null)
+                {
+                    if (exists.IsConfirmed)
+                    {
+                        user.IsFriend = true;
+                    }
+                    else
+                    {
+                        user.IsReceiver = true;
+                    }
+                }
+                else
+                {
+                    var exists2 = await dbContext.Friends
+                        .FirstOrDefaultAsync(x => x.UserId == id && x.ToUserId == authId);
+
+                    if (exists2 is not null)
+                    {
+                        if (exists2.IsConfirmed)
+                        {
+                            user.IsFriend = true;
+                        }
+                        else
+                        {
+                            user.IsSender = true;
+                        }
+                    }
+                }
+            }
+
+            return user;
         }
 
         public async Task<IEnumerable<UserModel>> GetAll(int id)
@@ -59,8 +114,8 @@ namespace ChatAppServer.Repositories
                 })
                 .Where(x => x.Login.StartsWith(login) && x.Id != id)
                 .ToListAsync();
-                //.Where(e => e.Login.Contains(login))
-                //.Where(e => EF.Functions.Like(e.Login, "[aei%"))
+            //.Where(e => e.Login.Contains(login))
+            //.Where(e => EF.Functions.Like(e.Login, "[aei%"))
 
             return result;
         }

@@ -54,6 +54,24 @@
     background-color: transparent;
 }
 
+.image-zone {
+    display: flex;
+    align-items: flex-end;
+}
+
+.file-name {
+    margin: 0;
+    color: #fff;
+    margin: .5em 0 .5em .2em;
+}
+
+.select-image {
+    padding: .5em 1em;
+    width: fit-content;
+    border-radius: 1.5em;
+    text-transform: unset;
+}
+
 .create-zone input[type=text] {
     border: 1px solid gray;
     padding: .3em;

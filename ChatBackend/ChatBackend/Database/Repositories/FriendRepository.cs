@@ -38,7 +38,14 @@ namespace ChatAppServer.Repositories
                 .AsNoTracking()
                 .Include(x => x.ToUser)
                 .Where(x => x.UserId == id && x.IsConfirmed)
-                .Select(x => new UserModel { Id = x.ToUserId, Login = x.ToUser.Login, Email = x.ToUser.Email, Image = x.ToUser.Image, IsFriend = true })
+                .Select(x => new UserModel 
+                { 
+                    Id = x.ToUserId, 
+                    Login = x.ToUser.Login, 
+                    Email = x.ToUser.Email, 
+                    Image = x.ToUser.FacialImage, 
+                    IsFriend = true 
+                })
                 .ToListAsync();
 
             var friends2 = await dbContext.Friends
@@ -50,7 +57,7 @@ namespace ChatAppServer.Repositories
                     Id = x.UserId,
                     Login = x.User.Login,
                     Email = x.User.Email,
-                    Image = x.User.Image,
+                    Image = x.User.FacialImage,
                     IsFriend = true
                 })
                 .ToListAsync();
@@ -71,7 +78,7 @@ namespace ChatAppServer.Repositories
                     Id = x.UserId,
                     Login = x.User.Login,
                     Email = x.User.Email,
-                    Image = x.User.Image,
+                    Image = x.User.FacialImage,
                     IsFriend = true
                 })
                 .ToListAsync();
@@ -88,7 +95,7 @@ namespace ChatAppServer.Repositories
                     Id = x.ToUserId,
                     Login = x.ToUser.Login,
                     Email = x.ToUser.Email,
-                    Image = x.ToUser.Image,
+                    Image = x.ToUser.FacialImage,
                     IsFriend = true
                 })
                 .ToListAsync();

@@ -1,1 +1,27 @@
-<p>user-page works!</p>
+<div class="user-container">
+    <div *ngIf="user | async as userData">
+        <div class="user">
+            <div>
+                {{userData.login}}
+            </div>
+            <div>
+                {{userData.email}}
+            </div>
+            <div *ngIf="!userData.isFriend && !userData.isSender && !userData.isReceiver;">
+                <div>
+                    <button (click)="addUser()">+</button>
+                </div>
+            </div>
+            <div *ngIf="userData.isSender;">
+                <div>
+                    <button (click)="acceptBid()">Accept</button>
+                </div>
+            </div>
+            <div *ngIf="userData.isReceiver">
+                <div>
+                    <button (click)="cancelBid()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

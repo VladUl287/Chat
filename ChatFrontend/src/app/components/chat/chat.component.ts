@@ -38,12 +38,10 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.messages.push(message);
 
       if (this.userId != message.userId) {
-
-        this.chatService.getCount(this.userId);
         this.hub.checkDialog(this.dialogId);
-        // this.chatService.checkDialog(this.dialogId);
+        this.chatService.getCount(this.userId);
       }
-      // this.cd.detectChanges();
+      this.cd.detectChanges();
     });
 
     this.userId = this.tokenService.token.id;
@@ -58,7 +56,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   send(): void {
-    let message: MessageModel = new MessageModel(this.messageText, this.userId, this.messages[0].dialogId);
+    let message: MessageModel = new MessageModel(this.messageText, this.userId, this.dialogId);
     this.hub.sendMessage(message);
   }
 

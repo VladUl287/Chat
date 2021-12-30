@@ -3,6 +3,7 @@ using ChatAppServer.Interfaces;
 using ChatBackend.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -27,9 +28,10 @@ namespace ChatAppServer.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> Get(int id)
+        public async Task<ActionResult<UserPageModel>> GetUser(int id)
         {
-            var user = await userRepository.Get(id);
+            var authId = int.Parse(User.Identity.Name);
+            var user = await userRepository.Get(authId, id);
 
             if (user is null)
             {
@@ -41,7 +43,7 @@ namespace ChatAppServer.Controllers
 
         [HttpGet]
         [Route("search/{login}")]
-        public async Task<IEnumerable<UserModel>> Get(string login)
+        public async Task<IEnumerable<UserModel>> SearchUsers(string login)
         {
             var id = int.Parse(User.Identity.Name);
 
@@ -49,7 +51,7 @@ namespace ChatAppServer.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
             var user = await userRepository.Get(id);
 

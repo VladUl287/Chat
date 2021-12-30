@@ -28,4 +28,8 @@ export class UsersComponent {
       }
     );
   }
+
+  userPage(userId: number): void {
+    this.router.navigateByUrl("user/" + userId);
+  }
 }

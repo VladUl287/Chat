@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Dialog } from '../models/dialog';
 import { Message } from '../models/message';
@@ -10,11 +10,17 @@ import { Message } from '../models/message';
 })
 export class ChatService {
   private readonly apiUrl: string = environment.apiUrl;
-  
+  public countDialogs: ReplaySubject<number> = new ReplaySubject<number>(0);
+
   constructor(private http: HttpClient) {}
 
-  getCount(userId: number): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/api/chat/count/${userId}`);
+  getCount(userId: number): void {
+    this.http.get<number>(`${this.apiUrl}/api/chat/count/${userId}`).toPromise()
+      .then(
+        (data: number) => {
+          this.countDialogs.next(data);
+        }
+      );
   }
 
   getDialog(userId: number, toUserId: number): Observable<Dialog> {
@@ -33,7 +39,7 @@ export class ChatService {
     return this.http.get<null>(`${this.apiUrl}/api/chat/dialog/check/${dialogId}`);
   }
 
-  createDialog(dialog: any): Observable<null> {
-    return this.http.post<null>(`${this.apiUrl}/api/chat/create/dialog`, dialog);
+  createDialog(formData: FormData): Observable<null> {
+    return this.http.post<null>(`${this.apiUrl}/api/chat/create/dialog`, formData);
   }
 }

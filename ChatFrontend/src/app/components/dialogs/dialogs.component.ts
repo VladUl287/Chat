@@ -14,43 +14,45 @@ import { UserService } from 'src/app/services/user.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogsComponent implements OnInit {
-  dialogues: ReplaySubject<Array<Dialog>> = new ReplaySubject<Array<Dialog>>();
-  friends$: ReplaySubject<Array<User>> = new ReplaySubject<Array<User>>();
-  friendsDialog: Array<User> = new Array<User>();
-  userId: number = 0;
-  createShow: boolean = true;
+  public dialogs: ReplaySubject<Array<Dialog>> = new ReplaySubject<Array<Dialog>>();
+  public friends$: ReplaySubject<Array<User>> = new ReplaySubject<Array<User>>();
+  public friendsDialog: Array<number> = new Array<number>();
+  public createShow: boolean = false;
+  public dialogName: string = "";
+  public userId: number = 0;
+  private image: any;
 
   constructor(
-    tokenService: TokenService, 
-    private hub: HubService, 
+    tokenService: TokenService,
     private chat: ChatService,
     private userServices: UserService) {
     this.userId = tokenService.token.id;
-    this.userServices.getFriends(this.userId).toPromise().then(
-      (data: User[]) => {
-        this.friends$.next(data);
-      }
-    );
+    // this.userServices.getFriends(this.userId).toPromise().then(
+    //   (data: User[]) => {
+    //     this.friends$.next(data);
+    //   }
+    // );
   }
 
   ngOnInit(): void {
     this.getDialogs();
-
-    this.hub.connection.on("ReceiveCountDialogs", (count: number) => {
-      if(count > 0) {
-        this.getDialogs();
+    this.chat.countDialogs.subscribe(
+      (data: number) => {
+        if(data > 0) {
+          this.getDialogs();
+        }
       }
-    });
+    );
   }
 
   getDialogs() {
     this.chat.getDialogs(this.userId).toPromise()
       .then((data: Dialog[]) => {
-        this.dialogues.next(data);
+        this.dialogs.next(data);
       });
   }
 
-  createDialog() {
+  addDialog() {
     this.createShow = true;
     this.userServices.getFriends(this.userId).toPromise()
       .then((data: User[]) => {
@@ -59,15 +61,42 @@ export class DialogsComponent implements OnInit {
     );
   }
 
-  addUser(user: User): void {
-    let index = this.friendsDialog.indexOf(user);
-    if(index == -1) {
-      this.friendsDialog.push(user);
+  createDialog() {
+    if(this.image && this.friendsDialog.length > 0 && this.dialogName.length > 0) {
+      this.friendsDialog.push(this.userId);
+      let formData: FormData = new FormData();
+      formData.append('Name', this.dialogName);
+      formData.append('UserId', this.userId.toString());
+      formData.append('FacialImage', this.image, this.image.name);
+       for (let i = 0; i < this.friendsDialog.length; i++) {
+         formData.append(`UsersId[${i}]`, this.friendsDialog[i].toString());
+       }
+      this.chat.createDialog(formData).toPromise()
+        .then(_ => {
+          alert("es");
+        });
     }
   }
 
-  removeUser(user: User): void {
-    let index = this.friendsDialog.indexOf(user);
+  handleFileInput(event: any): void {
+    let image = document.querySelector('.file-name')!;
+    if(event.target.files[0]) {
+      this.image = event.target.files[0];
+      image.innerHTML = this.image!.name;
+    } else {
+      image.innerHTML = '';
+    }
+  }
+
+  addUser(friendId: number): void {
+    let index = this.friendsDialog.indexOf(friendId);
+    if(index == -1) {
+      this.friendsDialog.push(friendId);
+    }
+  }
+
+  removeUser(friendId: number): void {
+    let index = this.friendsDialog.indexOf(friendId);
     if(index > -1) {
       this.friendsDialog.splice(index, 1);
     }

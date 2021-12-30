@@ -22,14 +22,21 @@ export class NavbarComponent implements OnInit {
     private chat: ChatService,
     private tokenService: TokenService,
     private cd: ChangeDetectorRef) { }
-
-  ngOnInit(): void {
+    
+    ngOnInit(): void {
     let token: UserToken = this.tokenService.token;
     let userId: number = token.id;
     this.email = token.email;
-
+    this.chat.countDialogs.subscribe(
+      (data: number) => {
+        this.count = data;
+        this.cd.detectChanges();
+      }
+    );
+    
     this.hub.connection.on("ReceiveMessage", (message: Message) => {
       if (message.userId != userId) {
+        // this.hub.countDialogs(userId);
         this.chat.getCount(userId);
       }
     });
@@ -37,8 +44,9 @@ export class NavbarComponent implements OnInit {
       this.count = count;
       this.cd.detectChanges();
     });
+    // this.hub.countDialogs(userId);
     this.chat.getCount(userId);
-
+    
     let btn = document.querySelector('#menu-btn');
     let navBar = document.querySelector('.nav-bar');
     btn?.addEventListener('click', () => {

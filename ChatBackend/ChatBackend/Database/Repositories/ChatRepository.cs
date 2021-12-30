@@ -22,7 +22,10 @@ namespace ChatAppServer.Repositories
         {
             return await dbContext.UsersDialogs
                 .AsNoTracking()
-                .Where(x => x.UserId == userId && !x.Dialog.Messages.OrderBy(x => x.DateCreate).LastOrDefault().IsRead)
+                .Where(x => 
+                    x.UserId == userId && 
+                    !x.Dialog.Messages.OrderBy(x => x.DateCreate).LastOrDefault().IsRead && 
+                    x.Dialog.Messages.OrderBy(x => x.DateCreate).LastOrDefault().UserId != userId)
                 .CountAsync();
         }
 
@@ -70,7 +73,7 @@ namespace ChatAppServer.Repositories
 
         public async Task<Dialog> CreateDialog(Dialog dialog)
         {
-            var check = await dbContext.Dialogs.FindAsync(dialog);
+            var check = await dbContext.Dialogs.FirstOrDefaultAsync(x => x.Name == dialog.Name && x.UserId == dialog.UserId);
             if (check is not null)
             {
                 return check;
@@ -156,7 +159,7 @@ namespace ChatAppServer.Repositories
         {
             var dialogsId = await dbContext.UsersDialogs
                 .AsNoTracking()
-                .Where(x => x.UserId == userId)
+                .Where(x => x.UserId == userId && !x.Dialog.IsMultiple)
                 .Select(x => x.DialogId)
                 .ToListAsync();
 
@@ -191,7 +194,45 @@ namespace ChatAppServer.Repositories
                     DateTime = x.LastMessage.DateCreate,
                     LastMessage = x.LastMessage.Content,
                     LastUserId = x.LastMessage.UserId
+                })
+                .ToList();
+
+            var userDialogsMult = await dbContext.UsersDialogs
+                .Where(x => x.UserId == userId && x.Dialog.IsMultiple)
+                .Select(x => new
+                {
+                    Id = x.DialogId,
+                    Login = x.Dialog.Name,
+                    Image = x.Dialog.Image,
+                    LastMessage = x.Dialog.Messages
+                                    .Select(x => new
+                                    {
+                                        IsConfirm = x.IsRead,
+                                        x.DateCreate,
+                                        x.Content,
+                                        x.UserId
+                                    })
+                                    .OrderBy(x => x.DateCreate)
+                                    .LastOrDefault()
+                })
+                .ToListAsync();
+
+            if (userDialogsMult.Count > 0)
+            {
+                var dialogsMult = userDialogsMult
+                .Select(x => new DialogModel
+                {
+                    Id = x.Id,
+                    Login = x.Login,
+                    Image = x.Image,
+                    IsConfirm = x.LastMessage != null && x.LastMessage.IsConfirm,
+                    DateTime = x.LastMessage != null ? x.LastMessage.DateCreate : System.DateTime.Now,
+                    LastMessage = x.LastMessage != null ? x.LastMessage.Content : string.Empty,
+                    LastUserId = x.LastMessage != null ? x.LastMessage.UserId : 0
                 });
+
+                dialogs.AddRange(dialogsMult);
+            }
 
             return dialogs;
         }
