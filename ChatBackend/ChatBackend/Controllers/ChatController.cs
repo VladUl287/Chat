@@ -82,5 +82,25 @@ namespace ChatBackend.Controllers
 
             return Ok();
         }
+
+        [HttpDelete("dialog/{id}")]
+        public async Task<IActionResult> DeleteDialog([FromRoute] int id)
+        {
+            await chat.DeleteUserDialog(id);
+            await chat.DeleteDialog(id);
+            await chat.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpDelete("messages")]
+        public async Task<IActionResult> DeleteMessages(int[] arrId)
+        {
+            await chat.DeleteMessages(arrId);
+
+            await chat.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }

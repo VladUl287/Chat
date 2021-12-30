@@ -119,5 +119,21 @@ namespace ChatAppServer.Repositories
                 .Where(x => x.ToUserId == id && !x.IsConfirmed)
                 .CountAsync();
         }
+
+        public async Task Delete(int authId, int userId)
+        {
+            var friend = await dbContext.Friends
+                .FirstOrDefaultAsync(e => (e.UserId == authId && e.ToUserId == userId) || (e.UserId == userId && e.ToUserId == authId));
+
+            if (friend is not null)
+            {
+                dbContext.Friends.Remove(friend);
+            }
+        }
+
+        public Task<int> SaveChangesAsync()
+        {
+            return dbContext.SaveChangesAsync();
+        }
     }
 }

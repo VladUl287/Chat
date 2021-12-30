@@ -50,12 +50,13 @@ export class UserPageComponent implements OnInit {
     this.hub.addFriend(this.userId);
   }
 
+  deleteFriend() {
+    this.userService.deleteFriend(this.userId).toPromise()
+      .then(_ => this.router.navigateByUrl("friends"));
+  }
+
   acceptBid() {
     this.userService.accept(this.token.token.id, this.userId)
     .subscribe(data => console.log(data));
-  }
-
-  cancelBid() {
-    
   }
 }

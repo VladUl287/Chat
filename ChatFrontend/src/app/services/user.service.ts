@@ -36,6 +36,10 @@ export class UserService {
     return this.http.get<User[]>(`${this.apiUrl}/api/friend/incoming/${id}`);
   }
 
+  deleteFriend(id: number): Observable<null> {
+    return this.http.delete<null>(`${this.apiUrl}/api/friend/delete/${id}`);
+  }
+
   search(login: string): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/api/user/search/${login}`);
   }

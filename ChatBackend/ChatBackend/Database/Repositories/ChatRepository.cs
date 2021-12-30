@@ -48,6 +48,22 @@ namespace ChatAppServer.Repositories
             dbContext.Dialogs.Remove(dialog);
         }
 
+        public async Task DeleteUserDialog(int dialogId)
+        {
+            //await dbContext.Database
+            //    .ExecuteSqlInterpolatedAsync($"DELETE FROM [Dialogs] WHERE [Id] = {dialogId}");
+            var dialogs = await dbContext.UsersDialogs
+                .Where(x => x.DialogId == dialogId)
+                .ToListAsync();
+
+            if (dialogs is null || dialogs.Count == 0)
+            {
+                return;
+            }
+
+            dbContext.UsersDialogs.RemoveRange(dialogs);
+        }
+
         public void DeleteMessage(Message message)
         {
             dbContext.Messages.Remove(message);
@@ -237,9 +253,9 @@ namespace ChatAppServer.Repositories
             return dialogs;
         }
 
-        public async Task<int> SaveChangesAsync()
+        public Task<int> SaveChangesAsync()
         {
-            return await dbContext.SaveChangesAsync();
+            return dbContext.SaveChangesAsync();
         }
     }
 }

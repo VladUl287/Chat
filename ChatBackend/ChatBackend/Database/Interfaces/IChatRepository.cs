@@ -11,6 +11,8 @@ namespace ChatAppServer.Interfaces
 
         Task DeleteDialog(int id);
 
+        Task DeleteUserDialog(int id);
+
         Task<int> CountDialogs(int userId);
 
         Task CreateMessage(Message message);
@@ -30,6 +32,7 @@ namespace ChatAppServer.Interfaces
         Task<IEnumerable<DialogModel>> GetDialogs(int id);
         
         Task<List<Message>> GetMessages(int dialogId);
+
         Task<int> SaveChangesAsync();
     }
 }

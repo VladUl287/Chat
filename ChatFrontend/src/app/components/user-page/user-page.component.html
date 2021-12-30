@@ -12,6 +12,11 @@
                     <button (click)="addUser()">+</button>
                 </div>
             </div>
+            <div *ngIf="userData.isFriend">
+                <div>
+                    <button (click)="deleteFriend()">Delete</button>
+                </div>
+            </div>
             <div *ngIf="userData.isSender;">
                 <div>
                     <button (click)="acceptBid()">Accept</button>
@@ -19,7 +24,7 @@
             </div>
             <div *ngIf="userData.isReceiver">
                 <div>
-                    <button (click)="cancelBid()">Cancel</button>
+                    <button (click)="deleteFriend()">Cancel</button>
                 </div>
             </div>
         </div>

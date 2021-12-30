@@ -11,6 +11,8 @@ namespace ChatAppServer.Interfaces
 
         Task Accept(int id, int fromId);
 
+        Task Delete(int authId, int userId);
+
         Task<IEnumerable<UserModel>> GetAll(int id);
 
         Task<IEnumerable<UserModel>> GetOutgoing(int id);
@@ -18,5 +20,7 @@ namespace ChatAppServer.Interfaces
         Task<IEnumerable<UserModel>> GetIncoming(int id);
 
         Task<int> GetCountIncoming(int id);
+
+        Task<int> SaveChangesAsync();
     }
 }

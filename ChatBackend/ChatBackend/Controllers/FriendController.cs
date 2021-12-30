@@ -37,6 +37,17 @@ namespace ChatAppServer.Controllers
             return await friend.GetIncoming(id);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var authId = int.Parse(User.Identity.Name);
+
+            await friend.Delete(authId, id);
+            await friend.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [HttpPatch]
         public async Task<IActionResult> Patch(AcceptModel acceptModel)
         {

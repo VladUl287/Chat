@@ -61,6 +61,15 @@ export class DialogsComponent implements OnInit {
     );
   }
 
+  deleteDialog(id: number) {
+    this.chat.deleteDialog(id).toPromise()
+      .then(
+        _ => {
+          this.getDialogs();
+        }
+      );
+  }
+
   createDialog() {
     if(this.image && this.friendsDialog.length > 0 && this.dialogName.length > 0) {
       this.friendsDialog.push(this.userId);
