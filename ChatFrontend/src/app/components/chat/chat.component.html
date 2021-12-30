@@ -1,8 +1,19 @@
 <div class="container">
     <div class="messages-wrap">
+        <div *ngIf="user" class="control-zone">
+            <div>
+                <img [src]="user.image" onError="this.src='/assets/images/no-img.png'" width="47px" height="47px" alt="">
+            </div>
+            <div>
+                <button (click)="dialogControlShow()">Control</button>
+            </div>
+            <div>
+                <button (click)="deleteMessages()">Delete</button>
+            </div>
+        </div>
         <div class="message-zone">
             <div class="messages-bottom">
-                <div *ngFor="let message of messages; let i = index" class="messages">
+                <div *ngFor="let message of messages; let i = index" class="messages" (click)="selectMessage(message)">
                     <div *ngIf="message.userId != userId" class="left">
                         <p>{{message.content}}</p>
                         <p>{{message.dateCreate | date: 'HH:mm dd/MM/yyyy' }}</p>
@@ -13,23 +24,55 @@
                     </div>
                     <div *ngIf="i == messages.length - 1" hidden>{{scrollToBottom()}}</div>
                 </div>
-                <!-- <div *ngFor="let message of messages$ | async; let i = index" class="messages">
-                    <div *ngIf="message.userId != userId" class="left">
-                        <p>{{message.content}}</p>
-                        <p>{{message.dateCreate | date: 'HH:mm dd/MM/yyyy' }}</p>
-                    </div>
-                    <div *ngIf="message.userId == userId" class="right">
-                        <p>{{message.content}}</p>
-                        <p>{{message.dateCreate | date: 'HH:mm dd/MM/yyyy' }}</p>
-                    </div>
-                    <div *ngIf="i == messages.length - 1" hidden>{{scrollToBottom()}}</div>
-                </div> -->
             </div>
         </div>
         <div class="send-zone">
             <textarea type="text" [(ngModel)]="messageText"></textarea>
             <div>
                 <button (click)="send()"><i class='bx bx-send bx-flip-vertical' ></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="create-wrap" *ngIf="controlShow">
+        <div class="create-zone">
+            <div class="controle-zone">
+                <p>Управление диалогом.</p>
+                <button class="close-btn" (click)="dialogControlHide()">X</button>
+            </div>
+            <div>
+                <!-- <input type="text" [(ngModel)]="dialogName" placeholder="название диалога"> -->
+            </div>
+            <div>
+                <div class="image-zone">
+                    <!-- <button (click)="fileInput.click()" class="select-image">Выбрать изображение</button>
+                    <input type="file" (change)="handleFileInput($event)" #fileInput hidden>
+                    <p class="file-name"></p> -->
+                </div>
+            </div>
+            <div class="user-select">
+                <div class="users-select-zone">
+                    <p>Выберите пользователей для добавления в диалог.</p>
+                    <!-- <div *ngFor="let friend of friends$ | async">
+                        <div class="user-card" 
+                        *ngIf="friendsDialog.indexOf(friend.id) == -1;else addedUser" (click)=addUser(friend.id)>
+                            <img [src]="friend.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
+                            <p>{{friend.login}}</p>
+                        </div>
+                        <ng-template #addedUser>
+                            <div class="user-card" (click)=removeUser(friend.id)>
+                                <img [src]="friend.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
+                                <p>{{friend.login}}</p>
+                                <div>
+                                    <p>added</p>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </div> -->
+                </div>
+            </div>
+            <div>
+                <button class="create-btn">Create</button>
             </div>
         </div>
     </div>
