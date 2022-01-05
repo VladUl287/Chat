@@ -4,18 +4,19 @@ import { Observable, ReplaySubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Dialog } from '../models/dialog';
 import { Message } from '../models/message';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
   private readonly apiUrl: string = environment.apiUrl;
-  public countDialogs: ReplaySubject<number> = new ReplaySubject<number>(0);
+  public readonly countDialogs: ReplaySubject<number> = new ReplaySubject<number>(0);
 
   constructor(private http: HttpClient) {}
 
   getCount(userId: number): void {
-    this.http.get<number>(`${this.apiUrl}/api/chat/count/${userId}`).toPromise()
+    this.http.get<number>(`${this.apiUrl}/api/chat/dialog/count/${userId}`).toPromise()
       .then(
         (data: number) => {
           this.countDialogs.next(data);
@@ -23,8 +24,16 @@ export class ChatService {
       );
   }
 
-  getDialog(userId: number, toUserId: number): Observable<Dialog> {
-    return this.http.get<Dialog>(`${this.apiUrl}/api/chat/dialog/${userId}/${toUserId}`);
+  getDialog(userId: number, toUserId: number): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/api/chat/dialog/${userId}/${toUserId}`);
+  }
+
+  getDialogView(dialogId: number): Observable<Dialog> {
+    return this.http.get<Dialog>(`${this.apiUrl}/api/chat/dialog/${dialogId}`);
+  }
+
+  getUsersDialog(dialogId: number): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/api/chat/dialog/users/${dialogId}`);
   }
 
   getMessages(dialogId: number): Observable<Message[]> {

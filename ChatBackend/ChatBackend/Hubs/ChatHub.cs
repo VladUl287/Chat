@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using ChatAppModels;
+﻿using ChatAppModels;
 using ChatAppServer.Interfaces;
+using ChatBackend.Database.Interfaces;
 using ChatBackend.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -15,27 +15,32 @@ namespace ChatBackend.Hubs
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ChatHub : Hub
     {
-        private static readonly Dictionary<int, string> _connections = new();
-        private readonly IChatRepository chatRepository;
+        private readonly static ConnectionMapping<int> _connections = new();
+        private readonly IMessageRepository chatRepository;
+        private readonly IDialogRepository dialogRepository;
         private readonly IFriendRepository friendRepository;
-        private readonly IMapper mapper;
 
-        public ChatHub(IChatRepository chatRepository, IFriendRepository friendRepository, IMapper mapper)
+        public ChatHub(IMessageRepository chatRepository, IDialogRepository dialogRepository, IFriendRepository friendRepository)
         {
             this.chatRepository = chatRepository;
+            this.dialogRepository = dialogRepository;
             this.friendRepository = friendRepository;
-            this.mapper = mapper;
         }
 
         public async Task SendMessage(MessageModel messageModel)
         {
-            var message = mapper.Map<Message>(messageModel);
-            message.DateCreate = DateTime.Now;
+            var message = new Message
+            {
+                Content = messageModel.Content,
+                UserId = messageModel.UserId,
+                DialogId = messageModel.DialogId,
+                DateCreate = DateTime.Now
+            };
 
-            var usersDialog = await chatRepository.GetUsersDialog(message.DialogId);
+            var usersDialog = await dialogRepository.GetUsersIdentifier(message.DialogId);
             for (int i = 0; i < usersDialog.Length; i++)
             {
-                if (_connections.TryGetValue(usersDialog[i], out string connectionId))
+                foreach (var connectionId in _connections.GetConnections(usersDialog[i]))
                 {
                     await Clients.Client(connectionId).SendAsync("ReceiveMessage", message);
                 }
@@ -47,15 +52,20 @@ namespace ChatBackend.Hubs
 
         public async Task CheckDialog(int dialogId)
         {
-            await chatRepository.CheckDialog(dialogId);
+            await dialogRepository.CheckDialog(dialogId);
         }
 
         public async Task AddFriend(int toUserId)
         {
-            var userId = Convert.ToInt32(Context.User.Identity.Name);
-            if (_connections.TryGetValue(toUserId, out string connectionId))
+            var userId = int.Parse(Context.User.Identity.Name);
+
+            var connections = _connections.GetConnections(userId).ToList();
+            if (connections.Count > 0)
             {
-                await Clients.Client(connectionId).SendAsync("ReceiveEventFriend", toUserId);
+                foreach (var connectionId in connections)
+                {
+                    await Clients.Client(connectionId).SendAsync("ReceiveEventFriend", toUserId);
+                }
             }
 
             await friendRepository.Create(new Friend { UserId = userId, ToUserId = toUserId });
@@ -63,18 +73,18 @@ namespace ChatBackend.Hubs
 
         public override Task OnConnectedAsync()
         {
-            var name = int.Parse(Context.User.Identity.Name);
+            var userId = int.Parse(Context.User.Identity.Name);
 
-            _connections.TryAdd(name, Context.ConnectionId);
+            _connections.Add(userId, Context.ConnectionId);
 
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            var name = int.Parse(Context.User.Identity.Name);
+            var userId = int.Parse(Context.User.Identity.Name);
 
-            _connections.Remove(name);
+            _connections.Remove(userId, Context.ConnectionId);
 
             return base.OnDisconnectedAsync(exception);
         }

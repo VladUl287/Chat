@@ -3,7 +3,6 @@ import { ReplaySubject } from 'rxjs';
 import { Dialog } from 'src/app/models/dialog';
 import { User } from 'src/app/models/user';
 import { ChatService } from 'src/app/services/chat.service';
-import { HubService } from 'src/app/services/hub.service';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -14,8 +13,8 @@ import { UserService } from 'src/app/services/user.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogsComponent implements OnInit {
-  public dialogs: ReplaySubject<Array<Dialog>> = new ReplaySubject<Array<Dialog>>();
-  public friends$: ReplaySubject<Array<User>> = new ReplaySubject<Array<User>>();
+  public dialogs$: ReplaySubject<Array<Dialog>> = new ReplaySubject<Array<Dialog>>();
+  public friends$: Promise<Array<User>> | undefined;
   public friendsDialog: Array<number> = new Array<number>();
   public createShow: boolean = false;
   public dialogName: string = "";
@@ -23,42 +22,32 @@ export class DialogsComponent implements OnInit {
   private image: any;
 
   constructor(
-    tokenService: TokenService,
+    private tokenService: TokenService,
     private chat: ChatService,
-    private userServices: UserService) {
-    this.userId = tokenService.token.id;
-    // this.userServices.getFriends(this.userId).toPromise().then(
-    //   (data: User[]) => {
-    //     this.friends$.next(data);
-    //   }
-    // );
-  }
+    private userServices: UserService) {}
 
   ngOnInit(): void {
+    this.userId = this.tokenService.token.id;
+
     this.getDialogs();
     this.chat.countDialogs.subscribe(
       (data: number) => {
         if(data > 0) {
           this.getDialogs();
         }
-      }
-    );
+      });
   }
 
   getDialogs() {
     this.chat.getDialogs(this.userId).toPromise()
       .then((data: Dialog[]) => {
-        this.dialogs.next(data);
+        this.dialogs$.next(data);
       });
   }
 
   addDialog() {
     this.createShow = true;
-    this.userServices.getFriends(this.userId).toPromise()
-      .then((data: User[]) => {
-        this.friends$.next(data);
-      }
-    );
+    this.friends$ = this.userServices.getFriends(this.userId).toPromise();
   }
 
   deleteDialog(id: number) {

@@ -1,6 +1,7 @@
 using ChatAppServer.Interfaces;
-using ChatAppServer.Repositories;
 using ChatBackend.Database;
+using ChatBackend.Database.Interfaces;
+using ChatBackend.Database.Repositories;
 using ChatBackend.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -72,7 +73,8 @@ namespace ChatBackend
                 });
             });
 
-            services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IDialogRepository, DialogRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IFriendRepository, FriendRepository>();
 

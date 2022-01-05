@@ -8,6 +8,22 @@
     position: relative;
 }
 
+.controls {
+    padding: .3em 0;
+}
+
+.controls button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: x-large;
+    background-color: transparent;
+}
+
 .create-wrap {
     position: fixed;
     top: 0;
@@ -61,15 +77,22 @@
 
 .file-name {
     margin: 0;
-    color: #fff;
     margin: .5em 0 .5em .2em;
 }
 
 .select-image {
-    padding: .5em 1em;
+    cursor: pointer;
+    font-size: 10pt;
+    padding: .5em .8em;
     width: fit-content;
     border-radius: 1.5em;
     text-transform: unset;
+    background-color: transparent;
+    border: 1px solid var(--main-bg);
+}
+
+.select-image:hover {
+    background-color: var(--main-bg);
 }
 
 .create-zone input[type=text] {
@@ -106,6 +129,21 @@
     color: var(--main-bg);
 }
 
+.create-btn-wrap {
+    position: absolute;
+    right: 5px;
+    bottom: 0;
+}
+
+.create-btn-wrap .create-btn {
+    border: none;
+    padding: .3em;
+    cursor: pointer;
+    border-radius: .3em;
+    color: var(--main-color);
+    background-color: var(--main-bg);
+}
+
 .dialogs-wrap {
     grid-column: 2;
     user-select: none;
@@ -119,7 +157,8 @@
 
 .dialog {
     display: flex;
-    margin: .2em 0;
+    cursor: pointer;
+    margin: 0 0 .4em 0;
     align-items: center;
     border-radius: .2em;
     position: relative;
@@ -131,7 +170,11 @@
 }
 
 .dialog:hover {
-    cursor: pointer;
+    color: var(--main-color);
+    background-color: var(--main-bg);
+}
+
+.dialog:hover {
     color: var(--main-color);
     background-color: var(--main-bg);
 }
@@ -158,4 +201,24 @@
 .dialog .avatar {
     width: 47px;
     height: 47px;
+}
+
+.dialog-wrap {
+    position: relative;
+}
+
+.dialog-delete {
+    position: absolute;
+    right: 5px;
+    bottom: 3px;
+    cursor: pointer;
+    padding: 0;
+    border: none;
+    color: var(--main-bg);
+    font-size: 12px;
+    background-color: transparent;
+}
+
+.dialog:hover ~ .dialog-delete {
+    color: var(--main-color);
 }

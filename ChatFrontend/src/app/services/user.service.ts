@@ -20,6 +20,10 @@ export class UserService {
     return this.http.get<User>(`${this.apiUrl}/api/user/${id}`);
   }
 
+  getUserDialog(id: number, dialogId: number): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/api/user/${id}/${dialogId}`);
+  }
+
   accept(id: number, fromId: number): Observable<null> {
     return this.http.patch<null>(this.apiUrl + '/api/friend', { id, fromId });
   }

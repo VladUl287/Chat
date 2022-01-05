@@ -1,5 +1,9 @@
+* {
+    user-select: none;
+}
+
 .nav-bar {
-    z-index: 999;
+    z-index: 111;
     position: fixed;
     left: 0;
     top: 0;
@@ -8,7 +12,7 @@
     padding: 0 .7em;
 }
 
-.nav-bar i {
+.nav-bar .bx {
     color: #fff;
     padding: .5em;
     font-size: x-large;
@@ -16,28 +20,36 @@
 }
 
 .logo {
-    margin: .3em 0 .9em 0;
+    display: flex;
+    align-items: center;
+    margin: .3em 0;
 }
 
 .logo .logo-name {
+    padding: 0 1em 0 0;
+    align-items: center;
     display: none;
 }
 
-.logo p {
+.logo .logo-name i {
+    padding: 0 .3em;
+}
+
+.logo .logo-name p {
     margin: 0;
     color: #fff;
     font-size: 14pt;
-    user-select: none;
     display: inline-block;
 }
 
 .logo #menu-btn {
+    cursor: pointer;
     border-radius: 50%;
+    margin-left: auto;
 }
 
 .logo #menu-btn:hover {
     color: #000;
-    cursor: pointer;
     background-color: #fff;
 }
 
@@ -51,20 +63,23 @@ nav li {
     position: relative;
 }
 
-nav li span {
-    color: #fff;
-    display: inline-block;
-}
-
 nav li a {
     width: 100%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
     margin: 0 0 .2em 0;
     border-radius: .5em;
-    display: inline-block;
+    text-decoration: none;
     transition: background-color 250ms ease;
 }
 
-nav li > span {
+nav li a p {
+    display: none;
+}
+
+nav li > p {
     display: none;
     position: absolute;
     left: 103%;
@@ -76,13 +91,11 @@ nav li > span {
     transition: color 150ms linear 100ms, background-color 250ms ease;
 }
 
-nav li a:hover ~ span {
-    display: flex;
-    align-items: center;
+nav li a:hover ~ p {
+    display: block;
 }
 
 nav li a:hover, nav li a:focus {
-    cursor: pointer;
     background-color: #fff;
 }
 
@@ -90,38 +103,29 @@ nav li a:hover *, nav li a:focus * {
     color: #000;
 }
 
-nav li a.account span {
+nav li .email {
     padding-left: .5em;
 }
 
-nav a span {
-    display: block;
-    height: 0;
-    max-width: 0;
-    overflow: hidden;
+nav li a i {
     color: #fff;
-    text-decoration: none;
-    transition: color 150ms linear 100ms, max-width 200ms linear;
+    overflow: hidden;
+    transition: color 150ms linear 100ms;
+}
+
+nav li a p {
+    margin: 0;
 }
 
 .nav-bar.active .logo-name {
     display: flex;
-    align-items: center;
 }
 
-.nav-bar.active a span {
-    height: auto;
-    max-width: 270px;
+.nav-bar.active a p {
     display: inline-block;
 }
 
-.nav-bar.active #menu-btn {
-    position: absolute;
-    top: .3em;
-    right: .3em;
-}
-
-.nav-bar.active nav li a:hover ~ span {
+.nav-bar.active nav li a:hover ~ p {
     display: none;
 }
 
@@ -130,13 +134,10 @@ nav a span {
     top: unset;
     right: unset;
     font-size: unset;
-    display: inline-block;
     background-color: #0077b6;
 }
 
 .dialogs-count-small {
-    display: inline;
-    user-select: none;
     font-size: small;
     position: absolute;
     top: 0;

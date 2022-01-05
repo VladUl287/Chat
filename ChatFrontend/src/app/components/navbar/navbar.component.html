@@ -1,7 +1,7 @@
 <div class="nav-bar ">
     <div class="logo">
         <div class="logo-name">
-            <i class='bx bxs-chat'></i>
+            <i class='bx bx-chat'></i>
             <p>Chat</p>
         </div>
         <i class='bx bx-menu' id="menu-btn"></i>
@@ -11,31 +11,33 @@
             <li>
                 <a routerLink="dialogs">
                     <i class='bx bx-message-square-dots'></i>
-                    <span>
+                    <p>
                         Сообщения
-                        <p class="dialogs-count-small" *ngIf="count > 0">{{count}}</p>
-                    </span>
+                    </p>
+                    <small class="dialogs-count-small" *ngIf="count > 0">
+                        {{count}}
+                    </small>
                 </a>
-                <span>Сообщения</span>
+                <p>Сообщения</p>
             </li>
             <li>
                 <a routerLink="friends">
-                    <i class='bx bxs-user-detail'></i>
-                    <span>Собеседники</span>
+                    <i class='bx bxs-user-detail'></i>                   
+                    <p>Собеседники</p>
                 </a>
-                <span>Собеседники</span>
+                <p>Собеседники</p>
             </li>
             <li routerLink="">
                 <a>
-                    <i class='bx bxs-user'></i>
-                    <span>Пользователи</span>
+                    <i class='bx bx-user'></i>
+                    <p>Пользователи</p>
                 </a>
-                <span>Пользователи</span>
+                <p>Пользователи</p>
             </li>
             <li>
                 <a routerLink="" (click)="logout()" class="account account-login">
-                    <span>{{email}}</span>
-                    <i class='bx bx-log-out'></i>
+                    <p class="email">{{email}}</p>
+                    <i class='bx bx-user-circle'></i>
                 </a>
             </li>
         </ul>

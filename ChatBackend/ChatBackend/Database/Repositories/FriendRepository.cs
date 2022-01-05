@@ -1,13 +1,12 @@
 ﻿using ChatAppModels;
 using ChatAppServer.Interfaces;
-using ChatBackend.Database;
 using ChatBackend.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ChatAppServer.Repositories
+namespace ChatBackend.Database.Repositories
 {
     public class FriendRepository : IFriendRepository
     {
@@ -34,52 +33,39 @@ namespace ChatAppServer.Repositories
 
         public async Task<IEnumerable<UserModel>> GetAll(int id)
         {
-            var friends = await dbContext.Friends
+            return await dbContext.Friends
                 .AsNoTracking()
-                .Include(x => x.ToUser)
                 .Where(x => x.UserId == id && x.IsConfirmed)
-                .Select(x => new UserModel 
-                { 
-                    Id = x.ToUserId, 
-                    Login = x.ToUser.Login, 
-                    Email = x.ToUser.Email, 
-                    Image = x.ToUser.FacialImage, 
-                    IsFriend = true 
-                })
-                .ToListAsync();
-
-            var friends2 = await dbContext.Friends
-                .AsNoTracking()
-                .Include(x => x.User)
-                .Where(x => x.ToUserId == id && x.IsConfirmed)
                 .Select(x => new UserModel
                 {
-                    Id = x.UserId,
-                    Login = x.User.Login,
-                    Email = x.User.Email,
-                    Image = x.User.FacialImage,
-                    IsFriend = true
+                    Id = x.ToUserId,
+                    Login = x.ToUser.Login,
+                    Email = x.ToUser.Email,
+                    Image = x.ToUser.FacialImage
                 })
+                .Union(dbContext.Friends
+                    .Where(x => x.ToUserId == id && x.IsConfirmed)
+                    .Select(x => new UserModel
+                    {
+                        Id = x.UserId,
+                        Login = x.User.Login,
+                        Email = x.User.Email,
+                        Image = x.User.FacialImage
+                    }))
                 .ToListAsync();
-
-            friends.AddRange(friends2);
-
-            return friends;
         }
 
         public async Task<IEnumerable<UserModel>> GetIncoming(int id)
         {
             return await dbContext.Friends
                 .AsNoTracking()
-                .Include(x => x.User)
                 .Where(x => x.ToUserId == id && !x.IsConfirmed)
                 .Select(x => new UserModel
                 {
                     Id = x.UserId,
                     Login = x.User.Login,
                     Email = x.User.Email,
-                    Image = x.User.FacialImage,
-                    IsFriend = true
+                    Image = x.User.FacialImage
                 })
                 .ToListAsync();
         }
@@ -88,31 +74,24 @@ namespace ChatAppServer.Repositories
         {
             return await dbContext.Friends
                 .AsNoTracking()
-                .Include(x => x.ToUser)
                 .Where(x => x.UserId == id && !x.IsConfirmed)
                 .Select(x => new UserModel
                 {
                     Id = x.ToUserId,
                     Login = x.ToUser.Login,
                     Email = x.ToUser.Email,
-                    Image = x.ToUser.FacialImage,
-                    IsFriend = true
+                    Image = x.ToUser.FacialImage
                 })
                 .ToListAsync();
         }
 
         public async Task Accept(int id, int fromId)
         {
-            var friend = await dbContext.Friends.FirstOrDefaultAsync(e => e.ToUserId == id && e.UserId == fromId);
-
-            if (friend is not null)
-            {
-                friend.IsConfirmed = true;
-                await dbContext.SaveChangesAsync();
-            }
+            await dbContext.Database
+                .ExecuteSqlInterpolatedAsync($"UPDATE [Friends] SET [IsConfirmed] = 1 WHERE [ToUserId] = {id} AND [UserId] = {fromId}");
         }
 
-        public async Task<int> GetCountIncoming(int id)
+        public async Task<int> GetCount(int id)
         {
             return await dbContext.Friends
                 .AsNoTracking()

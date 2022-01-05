@@ -1,78 +1,101 @@
 <div class="container">
     <div class="messages-wrap">
-        <div *ngIf="user" class="control-zone">
-            <div>
-                <img [src]="user.image" onError="this.src='/assets/images/no-img.png'" width="47px" height="47px" alt="">
-            </div>
-            <div>
-                <button (click)="dialogControlShow()">Control</button>
-            </div>
-            <div>
-                <button (click)="deleteMessages()">Delete</button>
-            </div>
-        </div>
-        <div class="message-zone">
-            <div class="messages-bottom">
-                <div *ngFor="let message of messages; let i = index" class="messages" (click)="selectMessage(message)">
-                    <div *ngIf="message.userId != userId" class="left">
-                        <p>{{message.content}}</p>
-                        <p>{{message.dateCreate | date: 'HH:mm dd/MM/yyyy' }}</p>
+
+        <div class="control-wrap">
+            <div *ngIf="dialogView$ | async as dialog" class="control-top">
+                <div>
+                    <div class="user-card">
+                        <img [src]="dialog.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
+                        <div class="info">
+                            <p>{{dialog.login}}</p>
+                        </div>
                     </div>
-                    <div *ngIf="message.userId == userId" class="right">
-                        <p>{{message.content}}</p>
-                        <p>{{message.dateCreate | date: 'HH:mm dd/MM/yyyy' }}</p>
+                </div>
+                <div class="control-zone">
+                    <div>
+                        <button (click)="toogleDeleteMode(true)">
+                            <i class='bx bx-message-square-minus'></i>
+                        </button>
                     </div>
-                    <div *ngIf="i == messages.length - 1" hidden>{{scrollToBottom()}}</div>
+                    <div>
+                        <button (click)="dialogInfo(true)">
+                            <i class='bx bx-info-circle'></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="message-info-wrap" *ngIf="isDeleteMode">
+                <div class="message-delete-count">
+                    <p>Сообщений: {{selectedMessages.length}}</p>
+                </div>
+                <div class="control-zone">
+                    <div>
+                        <button (click)="deleteMessages()">
+                            <i class='bx bx-message-square-x'></i>
+                        </button>
+                    </div>
+                    <div>
+                        <button class="close-btn" (click)="toogleDeleteMode(false)">X</button>
+                    </div>
                 </div>
             </div>
         </div>
+        
+        <div class="message-zone">
+            <div class="messages">
+                <div *ngFor="let message of messages$ | async; let i = index" (click)="selectMessage(message)"
+                [ngClass]="{'selected': message.isSelected }">
+                    <div *ngIf="message.userId != userId">
+                        <div class="left">
+                            <p class="message-content">{{message.content}}</p>
+                        </div>
+                        <p class="message-time lf">{{message.dateCreate | date: 'HH:mm dd/MM/yyyy' }}</p>
+                    </div>
+                    <div *ngIf="message.userId == userId">
+                        <div class="right">
+                            <p class="message-content">{{message.content}}</p>
+                        </div>
+                        <p class="message-time rg">{{message.dateCreate | date: 'HH:mm dd/MM/yyyy' }}</p>
+                    </div>
+                    <div *ngIf="i == messages.length - 1" class="scroll" hidden>{{scrollToBottom()}}</div>
+                </div>
+            </div>
+        </div>
+
         <div class="send-zone">
-            <textarea type="text" [(ngModel)]="messageText"></textarea>
             <div>
-                <button (click)="send()"><i class='bx bx-send bx-flip-vertical' ></i></button>
+                <textarea type="text" [(ngModel)]="content"></textarea>
+            </div>
+            <div>
+                <button (click)="send()">
+                    <span class="material-icons-outlined">
+                        send
+                    </span>
+                </button>
             </div>
         </div>
     </div>
 
-    <div class="create-wrap" *ngIf="controlShow">
-        <div class="create-zone">
-            <div class="controle-zone">
-                <p>Управление диалогом.</p>
-                <button class="close-btn" (click)="dialogControlHide()">X</button>
+    <div class="info-wrap" *ngIf="controlShow">
+        <div class="info-zone">
+            <div class="info-title-zone">
+                <p>Информация о диалоге</p>
+                <button class="close-btn" (click)="dialogInfo(false)">X</button>
             </div>
             <div>
-                <!-- <input type="text" [(ngModel)]="dialogName" placeholder="название диалога"> -->
+                <p *ngIf="dialogView$ | async as dialog">Диалог: {{dialog.login}}</p>
             </div>
-            <div>
-                <div class="image-zone">
-                    <!-- <button (click)="fileInput.click()" class="select-image">Выбрать изображение</button>
-                    <input type="file" (change)="handleFileInput($event)" #fileInput hidden>
-                    <p class="file-name"></p> -->
-                </div>
-            </div>
-            <div class="user-select">
-                <div class="users-select-zone">
-                    <p>Выберите пользователей для добавления в диалог.</p>
-                    <!-- <div *ngFor="let friend of friends$ | async">
-                        <div class="user-card" 
-                        *ngIf="friendsDialog.indexOf(friend.id) == -1;else addedUser" (click)=addUser(friend.id)>
-                            <img [src]="friend.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
-                            <p>{{friend.login}}</p>
+            <div class="user-info">
+                <div class="users-info-zone">
+                    <p>Участники</p>
+                    <div *ngFor="let user of users$ | async">
+                        <div class="user-card">
+                            <img [src]="user.image" onError="this.src='/assets/images/no-img.png'" 
+                            class="avatar" alt="">
+                            <p>{{user.login}}</p>
                         </div>
-                        <ng-template #addedUser>
-                            <div class="user-card" (click)=removeUser(friend.id)>
-                                <img [src]="friend.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
-                                <p>{{friend.login}}</p>
-                                <div>
-                                    <p>added</p>
-                                </div>
-                            </div>
-                        </ng-template>
-                    </div> -->
+                    </div>
                 </div>
-            </div>
-            <div>
-                <button class="create-btn">Create</button>
             </div>
         </div>
     </div>

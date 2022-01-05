@@ -13,8 +13,8 @@ import { TokenService } from 'src/app/services/token.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent implements OnInit {
-  email: string = '';
-  count: number = 0;
+  public email: string = '';
+  public count: number = 0;
 
   constructor(
     private router: Router,
@@ -23,28 +23,23 @@ export class NavbarComponent implements OnInit {
     private tokenService: TokenService,
     private cd: ChangeDetectorRef) { }
     
-    ngOnInit(): void {
+  public ngOnInit(): void {
     let token: UserToken = this.tokenService.token;
     let userId: number = token.id;
     this.email = token.email;
     this.chat.countDialogs.subscribe(
       (data: number) => {
         this.count = data;
+        console.log(data);
         this.cd.detectChanges();
       }
     );
     
     this.hub.connection.on("ReceiveMessage", (message: Message) => {
       if (message.userId != userId) {
-        // this.hub.countDialogs(userId);
         this.chat.getCount(userId);
       }
     });
-    this.hub.connection.on("ReceiveCountDialogs", (count: number) => {
-      this.count = count;
-      this.cd.detectChanges();
-    });
-    // this.hub.countDialogs(userId);
     this.chat.getCount(userId);
     
     let btn = document.querySelector('#menu-btn');
@@ -54,7 +49,7 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  logout() {
+  public logout(): void {
     this.tokenService.remove();
     this.router.navigateByUrl("auth");
   }

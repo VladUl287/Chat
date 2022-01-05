@@ -1,7 +1,6 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReplaySubject } from 'rxjs';
-import { Dialog } from 'src/app/models/dialog';
 import { User } from 'src/app/models/user';
 import { ChatService } from 'src/app/services/chat.service';
 import { TokenService } from 'src/app/services/token.service';
@@ -22,9 +21,9 @@ export class UsersComponent {
 
   getDialog(toUserId: number): void {
     let userId = this.tokenService.token.id;
-    this.chat.getDialog(userId, toUserId).subscribe(
-      (data: Dialog) => {
-        this.router.navigateByUrl("chat/" + data.id);
+    this.chat.getDialog(userId, toUserId).toPromise().then(
+      (data: number) => {
+        this.router.navigateByUrl("chat/" + data);
       }
     );
   }

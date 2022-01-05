@@ -38,7 +38,7 @@ namespace ChatAppServer.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var authId = int.Parse(User.Identity.Name);
 

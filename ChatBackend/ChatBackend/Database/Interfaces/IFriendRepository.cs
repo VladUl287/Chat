@@ -19,7 +19,7 @@ namespace ChatAppServer.Interfaces
 
         Task<IEnumerable<UserModel>> GetIncoming(int id);
 
-        Task<int> GetCountIncoming(int id);
+        Task<int> GetCount(int id);
 
         Task<int> SaveChangesAsync();
     }

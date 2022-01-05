@@ -5,6 +5,7 @@ export class Message{
         public dialogId: number,
         public content: string,
         public dateCreate: string,
-        public isRead: boolean
+        public isRead: boolean,
+        public isSelected: boolean = false
     ) {}
 }

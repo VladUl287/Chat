@@ -5,6 +5,7 @@ namespace ChatBackend.ViewModels
     public class DialogModel
     {
         public int Id { get; set; }
+        public bool IsMultiple { get; set; }
         public int LastUserId { get; set; }
         public string LastMessage { get; set; }
         public DateTime DateTime { get; set; }

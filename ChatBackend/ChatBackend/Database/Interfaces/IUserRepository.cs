@@ -1,5 +1,4 @@
-﻿using ChatAppModels;
-using ChatBackend.ViewModels;
+﻿using ChatBackend.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,10 +10,10 @@ namespace ChatAppServer.Interfaces
 
         Task<IEnumerable<UserModel>> Search(int id, string login);
 
-        Task<User> Get(int id);
+        Task<UserModel> Get(int userId, int id);
 
-        Task<UserPageModel> Get(int userId, int id);
+        Task Delete(int id);
 
-        Task Delete(User user);
+        Task<int> SaveChangesAsync();
     }
 }

@@ -59,3 +59,4 @@ C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ref\ChatBackend.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.pdb
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.genruntimeconfig.cache
+C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.csproj.AssemblyReference.cache

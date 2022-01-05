@@ -1,10 +1,12 @@
 <div class="wrapper">
     <div class="container">
         <div class="controls">
-            <button (click)="addDialog()">+</button>
+            <button (click)="addDialog()">
+                <i class='bx bx-message-square-add' ></i>
+            </button>
         </div>
         <div class="dialogs-wrap">
-            <div *ngFor="let dialog of dialogs | async" 
+            <div *ngFor="let dialog of dialogs$ | async" class="dialog-wrap"
              [ngClass]="{'isConfirm': dialog.lastUserId != userId && dialog.lastUserId != 0 && !dialog.isConfirm}">
                 <a *ngIf="dialog" [routerLink]="'../chat/' + dialog.id" class="dialog">
                     <img [src]="dialog.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
@@ -16,10 +18,11 @@
                         {{dialog.dateTime | date: 'HH:mm dd/MM/yyyy'}}
                     </span>
                 </a>
-                <button (click)="deleteDialog(dialog.id)">Delete</button>
+                <button class="dialog-delete" (click)="deleteDialog(dialog.id)">X</button>
             </div>
         </div>
     </div>
+    
     <div class="create-wrap" *ngIf="createShow">
         <div class="create-zone">
             <div class="controle-zone">
@@ -31,7 +34,9 @@
             </div>
             <div>
                 <div class="image-zone">
-                    <button (click)="fileInput.click()" class="select-image">Выбрать изображение</button>
+                    <button (click)="fileInput.click()" class="select-image">
+                        Выбрать изображение
+                    </button>
                     <input type="file" (change)="handleFileInput($event)" #fileInput hidden>
                     <p class="file-name"></p>
                 </div>
@@ -57,7 +62,7 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <div class="create-btn-wrap">
                 <button class="create-btn" (click)="createDialog()">Create</button>
             </div>
         </div>

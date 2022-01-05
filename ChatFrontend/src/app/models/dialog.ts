@@ -1,6 +1,7 @@
 export class Dialog {
     constructor(
         public id: number,
+        public isMultiple: boolean,
         public lastUserId: number,
         public lastMessage: string,
         public dateTime: string,

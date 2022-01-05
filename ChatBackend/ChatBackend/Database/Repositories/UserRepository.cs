@@ -1,13 +1,11 @@
-﻿using ChatAppModels;
-using ChatAppServer.Interfaces;
-using ChatBackend.Database;
+﻿using ChatAppServer.Interfaces;
 using ChatBackend.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ChatAppServer.Repositories
+namespace ChatBackend.Database.Repositories
 {
     public class UserRepository : IUserRepository
     {
@@ -18,26 +16,11 @@ namespace ChatAppServer.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task Delete(User user)
-        {
-            dbContext.Users.Remove(user);
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task<User> Get(int id)
+        public async Task<UserModel> Get(int authId, int id)
         {
             var user = await dbContext.Users
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            return user;
-        }
-
-        public async Task<UserPageModel> Get(int authId, int id)
-        {
-            var user = await dbContext.Users
-                .AsNoTracking()
-                .Select(x => new UserPageModel
+                .Select(x => new UserModel
                 {
                     Id = x.Id,
                     Email = x.Email,
@@ -48,8 +31,12 @@ namespace ChatAppServer.Repositories
 
             if (user is not null)
             {
+                //union
                 var exists = await dbContext.Friends
-                    .FirstOrDefaultAsync(x => x.UserId == authId && x.ToUserId == id);
+                    .AsNoTracking()
+                    .Where(x => (x.UserId == authId && x.ToUserId == id) || (x.UserId == id && x.ToUserId == authId))
+                    .Select(x => new { x.UserId, x.IsConfirmed })
+                    .FirstOrDefaultAsync();
 
                 if (exists is not null)
                 {
@@ -57,28 +44,53 @@ namespace ChatAppServer.Repositories
                     {
                         user.IsFriend = true;
                     }
-                    else
+                    else if (exists.UserId == id)
                     {
                         user.IsReceiver = true;
                     }
-                }
-                else
-                {
-                    var exists2 = await dbContext.Friends
-                        .FirstOrDefaultAsync(x => x.UserId == id && x.ToUserId == authId);
-
-                    if (exists2 is not null)
+                    else if (exists.UserId != id)
                     {
-                        if (exists2.IsConfirmed)
-                        {
-                            user.IsFriend = true;
-                        }
-                        else
-                        {
-                            user.IsSender = true;
-                        }
+                        user.IsSender = true;
                     }
                 }
+
+                //var receiver = await dbContext.Friends
+                //    .AsNoTracking()
+                //    .Where(x => x.UserId == authId && x.ToUserId == id)
+                //    .Select(x => new { x.IsConfirmed })
+                //    .FirstOrDefaultAsync();
+
+                //if (receiver is not null)
+                //{
+                //    if (receiver.IsConfirmed)
+                //    {
+                //        user.IsFriend = true;
+                //    }
+                //    else
+                //    {
+                //        user.IsReceiver = true;
+                //    }
+                //}
+                //else
+                //{
+                //    var sender = await dbContext.Friends
+                //        .AsNoTracking()
+                //        .Where(x => x.UserId == id && x.ToUserId == authId)
+                //        .Select(x => new { x.IsConfirmed })
+                //        .FirstOrDefaultAsync();
+
+                //    if (sender is not null)
+                //    {
+                //        if (sender.IsConfirmed)
+                //        {
+                //            user.IsFriend = true;
+                //        }
+                //        else
+                //        {
+                //            user.IsSender = true;
+                //        }
+                //    }
+                //}
             }
 
             return user;
@@ -103,7 +115,7 @@ namespace ChatAppServer.Repositories
 
         public async Task<IEnumerable<UserModel>> Search(int id, string login)
         {
-            var result = await dbContext.Users
+            return await dbContext.Users
                 .AsNoTracking()
                 .Select(x => new UserModel
                 {
@@ -114,10 +126,17 @@ namespace ChatAppServer.Repositories
                 })
                 .Where(x => x.Login.StartsWith(login) && x.Id != id)
                 .ToListAsync();
-            //.Where(e => e.Login.Contains(login))
-            //.Where(e => EF.Functions.Like(e.Login, "[aei%"))
+        }
 
-            return result;
+        public async Task Delete(int id)
+        {
+            await dbContext.Database
+                .ExecuteSqlInterpolatedAsync($"DELETE FROM [Users] WHERE [Id] = {id}");
+        }
+
+        public Task<int> SaveChangesAsync()
+        {
+            return dbContext.SaveChangesAsync();
         }
     }
 }

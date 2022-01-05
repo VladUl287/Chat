@@ -28,7 +28,7 @@ namespace ChatAppServer.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserPageModel>> GetUser(int id)
+        public async Task<ActionResult<UserModel>> GetUser(int id)
         {
             var authId = int.Parse(User.Identity.Name);
             var user = await userRepository.Get(authId, id);
@@ -51,14 +51,9 @@ namespace ChatAppServer.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var user = await userRepository.Get(id);
-
-            if (user is not null)
-            {
-                await userRepository.Delete(user);
-            }
+            await userRepository.Delete(id);
 
             return NoContent();
         }
