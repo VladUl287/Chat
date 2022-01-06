@@ -29,9 +29,11 @@ export class NavbarComponent implements OnInit {
     this.email = token.email;
     this.chat.countDialogs.subscribe(
       (data: number) => {
-        this.count = data;
         console.log(data);
-        this.cd.detectChanges();
+        if(data > 0) {
+          this.count = data;
+          this.cd.detectChanges();
+        }
       }
     );
     

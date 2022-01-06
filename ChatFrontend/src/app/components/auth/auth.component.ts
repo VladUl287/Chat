@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { HubService } from 'src/app/services/hub.service';
 
 @Component({
   selector: 'app-auth',
@@ -23,7 +24,7 @@ export class AuthComponent implements OnInit {
     password: new FormControl('')
   });
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private hub: HubService, private router: Router) {}
   
   ngOnInit(): void {
     if(localStorage.getItem('token') !== null) {
@@ -35,6 +36,7 @@ export class AuthComponent implements OnInit {
     this.authService.login(this.loginForm).toPromise()
       .then((data: any) => {
           localStorage.setItem('token', data.token);
+          this.hub.startConnection();
           this.router.navigateByUrl('');
         }
       );

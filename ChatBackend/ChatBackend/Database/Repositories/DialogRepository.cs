@@ -48,7 +48,7 @@ namespace ChatBackend.Database.Repositories
                 {
                     Id = x.UserId,
                     Login = x.User.Login,
-                    Image = x.User.FacialImage,
+                    Image = x.User.Image,
                     IsMultiple = false
                 })
                 .Union(dbContext.UsersDialogs
@@ -84,7 +84,7 @@ namespace ChatBackend.Database.Repositories
                     Id = x.User.Id,
                     Email = x.User.Email,
                     Login = x.User.Login,
-                    Image = x.User.FacialImage
+                    Image = x.User.Image
                 })
                 .ToListAsync();
         }
@@ -159,7 +159,7 @@ namespace ChatBackend.Database.Repositories
                 {
                     Id = ud.DialogId,
                     Login = ud.User.Login,
-                    Image = ud.User.FacialImage,
+                    Image = ud.User.Image,
                     IsConfirm = lm.IsRead,
                     DateTime = lm.DateCreate,
                     LastMessage = lm.Content,

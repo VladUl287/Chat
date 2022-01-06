@@ -37,7 +37,11 @@ namespace ChatBackend.Hubs
                 DateCreate = DateTime.Now
             };
 
+            await chatRepository.CreateMessage(message);
+            await chatRepository.SaveChangesAsync();
+                        
             var usersDialog = await dialogRepository.GetUsersIdentifier(message.DialogId);
+
             for (int i = 0; i < usersDialog.Length; i++)
             {
                 foreach (var connectionId in _connections.GetConnections(usersDialog[i]))
@@ -45,9 +49,6 @@ namespace ChatBackend.Hubs
                     await Clients.Client(connectionId).SendAsync("ReceiveMessage", message);
                 }
             }
-
-            await chatRepository.CreateMessage(message);
-            await chatRepository.SaveChangesAsync();
         }
 
         public async Task CheckDialog(int dialogId)

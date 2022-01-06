@@ -23,10 +23,10 @@ export class ChatComponent implements OnInit, OnDestroy {
   public userId: number = this.tokenService.token.id;
   public dialogView$: Promise<Dialog> | undefined;
   public users$: Promise<User[]> | undefined;
+  public isDeleteMode: boolean = false; 
   public controlShow: boolean = false;
   public content: string = '';
   private dialogId: number = 0;
-  public isDeleteMode: boolean = false; 
   private acceptScroll: boolean = true;
   private routeSub: Subscription | undefined;
 
@@ -50,7 +50,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.messages$.next(this.messages);
       if (this.userId != message.userId) {
         this.hub.checkDialog(this.dialogId);
-        // this.chatService.getCount(this.userId);
+        this.chatService.getCount(this.userId);
       }
     });
 
@@ -69,7 +69,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   public send(): void {
     if(this.content.length > 0) {
       let message = new MessageModel(this.content, this.userId, this.dialogId);
-      this.hub.sendMessage(message); 
+      this.hub.sendMessage(message);
+      this.content = "";
     }
   }
 
@@ -83,7 +84,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   public scrollToBottom(): void {
     if(this.acceptScroll) {
       this.acceptScroll = false;
-      let objDiv = document.querySelector(".message-zone");
+      let objDiv = document.querySelector(".messages");
       if(objDiv) {
         objDiv.scrollTop = objDiv.scrollHeight;
       }

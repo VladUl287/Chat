@@ -1,14 +1,21 @@
 <div class="wrapper">
     <div class="container">
         <div class="controls">
-            <button (click)="addDialog()">
-                <i class='bx bx-message-square-add' ></i>
-            </button>
+            <div>
+                <button (click)="addDialog()">
+                    <i class='bx bx-message-square-add' ></i>
+                </button>
+            </div>
+            <div>
+                <button (click)="toogleDeleteMode()">
+                    <i class='bx bx-message-square-x'></i>
+                </button>
+            </div>
         </div>
         <div class="dialogs-wrap">
             <div *ngFor="let dialog of dialogs$ | async" class="dialog-wrap"
              [ngClass]="{'isConfirm': dialog.lastUserId != userId && dialog.lastUserId != 0 && !dialog.isConfirm}">
-                <a *ngIf="dialog" [routerLink]="'../chat/' + dialog.id" class="dialog">
+                <a *ngIf="dialog && !deleteMode; else delete" [routerLink]="'../chat/' + dialog.id" class="dialog">
                     <img [src]="dialog.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
                     <div class="info">
                         <p>{{dialog.login}}</p>
@@ -18,14 +25,25 @@
                         {{dialog.dateTime | date: 'HH:mm dd/MM/yyyy'}}
                     </span>
                 </a>
-                <button class="dialog-delete" (click)="deleteDialog(dialog.id)">X</button>
+                <ng-template #delete>
+                    <div (click)="deleteDialog(dialog.id)" class="dialog bg">
+                        <img [src]="dialog.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
+                        <div class="info">
+                            <p>{{dialog.login}}</p>
+                            <p *ngIf="dialog.lastMessage.length > 0">Сообщение: {{dialog.lastMessage}}</p>
+                        </div>
+                        <span *ngIf="dialog.lastMessage.length > 0" class="time">
+                            {{dialog.dateTime | date: 'HH:mm dd/MM/yyyy'}}
+                        </span>
+                    </div>
+                </ng-template>
             </div>
         </div>
     </div>
     
     <div class="create-wrap" *ngIf="createShow">
         <div class="create-zone">
-            <div class="controle-zone">
+            <div class="control-zone">
                 <p>Создание диалога</p>
                 <button class="close-btn" (click)="closeDialog()">X</button>
             </div>
@@ -35,7 +53,7 @@
             <div>
                 <div class="image-zone">
                     <button (click)="fileInput.click()" class="select-image">
-                        Выбрать изображение
+                        <span>Выбрать изображение</span>
                     </button>
                     <input type="file" (change)="handleFileInput($event)" #fileInput hidden>
                     <p class="file-name"></p>
@@ -44,26 +62,26 @@
             <div class="user-select">
                 <div class="users-select-zone">
                     <p>Выберите пользователей для добавления в диалог.</p>
-                    <div *ngFor="let friend of friends$ | async">
-                        <div class="user-card" 
-                        *ngIf="friendsDialog.indexOf(friend.id) == -1;else addedUser" (click)=addUser(friend.id)>
-                            <img [src]="friend.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
-                            <p>{{friend.login}}</p>
-                        </div>
-                        <ng-template #addedUser>
-                            <div class="user-card" (click)=removeUser(friend.id)>
-                                <img [src]="friend.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
-                                <p>{{friend.login}}</p>
-                                <div>
-                                    <p>added</p>
+                    <div class="user-scroll-zone">
+                        <div *ngFor="let friend of friends$ | async">
+                            <div class="user-card" (click)=toogleUser(friend.id)>
+                                <img [src]="friend.image" onError="this.src='/assets/images/no-img.png'"
+                                class="avatar" alt="">
+                                <p class="login">{{friend.login}}</p>
+                                <div *ngIf="friendsDialog.indexOf(friend.id) > -1" class="mark">
+                                    <p>
+                                        <i class='bx bx-check'></i>
+                                    </p>
                                 </div>
                             </div>
-                        </ng-template>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="create-btn-wrap">
-                <button class="create-btn" (click)="createDialog()">Create</button>
+                <div>
+                    <button class="create-btn" (click)="createDialog()">Создать</button>
+                </div>
             </div>
         </div>
     </div>

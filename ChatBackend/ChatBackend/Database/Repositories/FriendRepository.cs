@@ -41,7 +41,7 @@ namespace ChatBackend.Database.Repositories
                     Id = x.ToUserId,
                     Login = x.ToUser.Login,
                     Email = x.ToUser.Email,
-                    Image = x.ToUser.FacialImage
+                    Image = x.ToUser.Image
                 })
                 .Union(dbContext.Friends
                     .Where(x => x.ToUserId == id && x.IsConfirmed)
@@ -50,7 +50,7 @@ namespace ChatBackend.Database.Repositories
                         Id = x.UserId,
                         Login = x.User.Login,
                         Email = x.User.Email,
-                        Image = x.User.FacialImage
+                        Image = x.User.Image
                     }))
                 .ToListAsync();
         }
@@ -65,7 +65,7 @@ namespace ChatBackend.Database.Repositories
                     Id = x.UserId,
                     Login = x.User.Login,
                     Email = x.User.Email,
-                    Image = x.User.FacialImage
+                    Image = x.User.Image
                 })
                 .ToListAsync();
         }
@@ -80,7 +80,7 @@ namespace ChatBackend.Database.Repositories
                     Id = x.ToUserId,
                     Login = x.ToUser.Login,
                     Email = x.ToUser.Email,
-                    Image = x.ToUser.FacialImage
+                    Image = x.ToUser.Image
                 })
                 .ToListAsync();
         }

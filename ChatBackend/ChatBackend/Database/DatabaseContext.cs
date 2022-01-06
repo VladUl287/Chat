@@ -20,7 +20,7 @@ namespace ChatBackend.Database
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ChatNew6;Trusted_connection=true")
+                .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ChatNew7;Trusted_connection=true")
                 .LogTo(message =>
                 {
                     System.Console.WriteLine(message);

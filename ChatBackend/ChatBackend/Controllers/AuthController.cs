@@ -3,6 +3,7 @@ using ChatAppModels;
 using ChatBackend.Database;
 using ChatBackend.ViewModels;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -88,15 +89,7 @@ namespace ChatAppServer.Controllers
 
             if (register.ImageFile.Length > 0)
             {
-                using var memoryStream = new MemoryStream();
-                await register.ImageFile.CopyToAsync(memoryStream);
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                using var img = await Image.LoadAsync(memoryStream);
-                using var memory = new MemoryStream();
-                img.Mutate(x => x.Resize(80, 60, KnownResamplers.Lanczos3));
-                await img.SaveAsync(memory, new JpegEncoder());
-                var fileBytes = memory.ToArray();
-                newUser.FacialImage = $"data:image/jpeg;base64,{Convert.ToBase64String(fileBytes)}";
+                newUser.Image = await GetBase64(register.ImageFile, 160, 120);
             }
 
             string salt = configuration.GetValue<string>("Secrets:PasswordSalt");
@@ -106,6 +99,19 @@ namespace ChatAppServer.Controllers
             await dbContext.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        public static async Task<string> GetBase64(IFormFile image, int width, int height)
+        {
+            using var memoryStream = new MemoryStream();
+            await image.CopyToAsync(memoryStream);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            using var img = await Image.LoadAsync(memoryStream);
+            using var memory = new MemoryStream();
+            img.Mutate(x => x.Resize(width, height, KnownResamplers.Lanczos3));
+            await img.SaveAsync(memory, new JpegEncoder());
+            var fileBytes = memory.ToArray();
+            return $"data:image/jpeg;base64,{Convert.ToBase64String(fileBytes)}";
         }
 
         public static string HashPassword(string password, string salt)

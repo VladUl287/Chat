@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { Dialog } from 'src/app/models/dialog';
 import { User } from 'src/app/models/user';
 import { ChatService } from 'src/app/services/chat.service';
@@ -17,9 +17,10 @@ export class DialogsComponent implements OnInit {
   public friends$: Promise<Array<User>> | undefined;
   public friendsDialog: Array<number> = new Array<number>();
   public createShow: boolean = false;
+  public deleteMode: boolean = false;
   public dialogName: string = "";
   public userId: number = 0;
-  private image: any;
+  private image: File | undefined;
 
   constructor(
     private tokenService: TokenService,
@@ -52,51 +53,54 @@ export class DialogsComponent implements OnInit {
 
   deleteDialog(id: number) {
     this.chat.deleteDialog(id).toPromise()
-      .then(
-        _ => {
+      .then(_ => {
           this.getDialogs();
-        }
-      );
+        });
+  }
+
+  toogleDeleteMode(): void {
+    this.deleteMode = !this.deleteMode;
   }
 
   createDialog() {
-    if(this.image && this.friendsDialog.length > 0 && this.dialogName.length > 0) {
+    if(this.friendsDialog.length > 0 && this.dialogName.length > 0) {
       this.friendsDialog.push(this.userId);
       let formData: FormData = new FormData();
       formData.append('Name', this.dialogName);
       formData.append('UserId', this.userId.toString());
-      formData.append('FacialImage', this.image, this.image.name);
-       for (let i = 0; i < this.friendsDialog.length; i++) {
-         formData.append(`UsersId[${i}]`, this.friendsDialog[i].toString());
-       }
+      if(this.image) {
+        formData.append('FacialImage', this.image, this.image.name);
+      }
+      for (let i = 0; i < this.friendsDialog.length; i++) {
+        formData.append(`UsersId[${i}]`, this.friendsDialog[i].toString());
+      }
+
       this.chat.createDialog(formData).toPromise()
         .then(_ => {
-          alert("es");
+          this.closeDialog();
+          this.getDialogs();
         });
     }
   }
 
   handleFileInput(event: any): void {
-    let image = document.querySelector('.file-name')!;
-    if(event.target.files[0]) {
-      this.image = event.target.files[0];
-      image.innerHTML = this.image!.name;
+    let fileName = document.querySelector('.file-name')!;
+    let image = event.target.files[0];
+    if(image) {
+      this.image = image;
+      fileName.innerHTML = image.name;
     } else {
-      image.innerHTML = '';
+      this.image = undefined;
+      fileName.innerHTML = '';
     }
   }
 
-  addUser(friendId: number): void {
-    let index = this.friendsDialog.indexOf(friendId);
-    if(index == -1) {
-      this.friendsDialog.push(friendId);
-    }
-  }
-
-  removeUser(friendId: number): void {
+  toogleUser(friendId: number): void {
     let index = this.friendsDialog.indexOf(friendId);
     if(index > -1) {
       this.friendsDialog.splice(index, 1);
+    } else {
+      this.friendsDialog.push(friendId);
     }
   }
 

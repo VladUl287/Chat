@@ -1,8 +1,9 @@
 .user-wrap {
-    grid-column: 2;
+    position: relative;
 }
 
 .user-card {
+    cursor: pointer;
     width: 100%;
     margin-top: .2em;
     padding: .3em .4em;
@@ -29,10 +30,14 @@
 }
 
 .control-zone {
-    margin: 0 .3em 0 auto;
+    position: absolute;
+    top: 50.5%;
+    right: .6em;
+    transform: translateY(-50%);
 }
 
 .control-zone button {
+    display: flex;
     padding: 0;
     border: none;
     cursor: pointer;

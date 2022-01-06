@@ -36,10 +36,10 @@ export class FriendsComponent implements OnInit {
 
   incoming(): void {
     this.userServices.getIncoming(this.token.id).toPromise()
-    .then((data: User[]) => {
-      this.friends$.next(data);
-      this.isIncoming = true;
-    });
+      .then((data: User[]) => {
+        this.friends$.next(data);
+        this.isIncoming = true;
+      });
   }
 
   outgoing(): void {

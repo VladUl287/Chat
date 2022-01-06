@@ -1,3 +1,24 @@
 .user-container {
-    margin: 0 25%;
+    margin: 2% 25% 0 25%;
+}
+
+.user {
+    display: flex;
+    align-items: flex-start;
+}
+
+.user .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: .2em;
+}
+
+.user .user-info {
+    padding: 0 0 0 .3em;
+}
+
+.user .user-info > p {
+    color: #fafafa;
+    user-select: none;
+    margin: 0 0 .3em 0;
 }

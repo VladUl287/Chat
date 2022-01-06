@@ -31,7 +31,6 @@ namespace ChatBackend.Database.Repositories
 
             if (user is not null)
             {
-                //union
                 var exists = await dbContext.Friends
                     .AsNoTracking()
                     .Where(x => (x.UserId == authId && x.ToUserId == id) || (x.UserId == id && x.ToUserId == authId))
@@ -46,11 +45,11 @@ namespace ChatBackend.Database.Repositories
                     }
                     else if (exists.UserId == id)
                     {
-                        user.IsReceiver = true;
+                        user.IsSender = true;
                     }
                     else if (exists.UserId != id)
                     {
-                        user.IsSender = true;
+                        user.IsReceiver = true;
                     }
                 }
 
@@ -105,7 +104,7 @@ namespace ChatBackend.Database.Repositories
                     Id = e.Id,
                     Email = e.Email,
                     Login = e.Login,
-                    Image = e.FacialImage
+                    Image = e.Image
                 })
                 .Where(e => e.Id != id)
                 .ToListAsync();
@@ -122,7 +121,7 @@ namespace ChatBackend.Database.Repositories
                     Id = x.Id,
                     Email = x.Email,
                     Login = x.Login,
-                    Image = x.FacialImage
+                    Image = x.Image
                 })
                 .Where(x => x.Login.StartsWith(login) && x.Id != id)
                 .ToListAsync();

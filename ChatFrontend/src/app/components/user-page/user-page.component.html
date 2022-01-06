@@ -1,32 +1,36 @@
 <div class="user-container">
-    <div *ngIf="user | async as userData">
+    <div *ngIf="user$ | async as userData">
         <div class="user">
             <div>
-                {{userData.login}}
+                <img [src]="userData.image" onError="this.src='/assets/images/no-img.png'"
+                class="avatar" alt="">
             </div>
-            <div>
-                {{userData.email}}
+            <div class="user-info">
+                <p>Логин: {{userData.login}}</p>
+                <p>Email: {{userData.email}}</p>
             </div>
+        </div>
+        <div class="controls">
             <div *ngIf="!userData.isFriend && !userData.isSender && !userData.isReceiver;">
                 <div>
-                    <button (click)="addUser()">+</button>
+                    <button (click)="addUser()">Добавить в друзья</button>
                 </div>
             </div>
             <div *ngIf="userData.isFriend">
                 <div>
-                    <button (click)="deleteFriend()">Delete</button>
+                    <button (click)="deleteFriend()">Удалить из друзей</button>
                 </div>
             </div>
             <div *ngIf="userData.isSender;">
                 <div>
-                    <button (click)="acceptBid()">Accept</button>
+                    <button (click)="accept()">Принять в друзья</button>
                 </div>
             </div>
             <div *ngIf="userData.isReceiver">
                 <div>
-                    <button (click)="deleteFriend()">Cancel</button>
+                    <button (click)="deleteFriend()">Отменить заявку</button>
                 </div>
             </div>
-        </div>
+        </div>  
     </div>
 </div>

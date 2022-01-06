@@ -5,7 +5,8 @@
             <div *ngIf="dialogView$ | async as dialog" class="control-top">
                 <div>
                     <div class="user-card">
-                        <img [src]="dialog.image" onError="this.src='/assets/images/no-img.png'" class="avatar" alt="">
+                        <img [src]="dialog.image" onError="this.src='/assets/images/no-img.png'"
+                        class="avatar br" alt="">
                         <div class="info">
                             <p>{{dialog.login}}</p>
                         </div>
@@ -14,7 +15,7 @@
                 <div class="control-zone">
                     <div>
                         <button (click)="toogleDeleteMode(true)">
-                            <i class='bx bx-message-square-minus'></i>
+                            <i class='bx bxs-notification'></i>
                         </button>
                     </div>
                     <div>
@@ -28,7 +29,7 @@
                 <div class="message-delete-count">
                     <p>Сообщений: {{selectedMessages.length}}</p>
                 </div>
-                <div class="control-zone">
+                <div class="control-zone delete">
                     <div>
                         <button (click)="deleteMessages()">
                             <i class='bx bx-message-square-x'></i>
@@ -68,9 +69,7 @@
             </div>
             <div>
                 <button (click)="send()">
-                    <span class="material-icons-outlined">
-                        send
-                    </span>
+                    <i class='bx bx-send'></i>
                 </button>
             </div>
         </div>
@@ -83,7 +82,7 @@
                 <button class="close-btn" (click)="dialogInfo(false)">X</button>
             </div>
             <div>
-                <p *ngIf="dialogView$ | async as dialog">Диалог: {{dialog.login}}</p>
+                <p *ngIf="dialogView$ | async as dialog">Название: {{dialog.login}}</p>
             </div>
             <div class="user-info">
                 <div class="users-info-zone">
@@ -92,7 +91,7 @@
                         <div class="user-card">
                             <img [src]="user.image" onError="this.src='/assets/images/no-img.png'" 
                             class="avatar" alt="">
-                            <p>{{user.login}}</p>
+                            <p class="user-login">{{user.login}}</p>
                         </div>
                     </div>
                 </div>

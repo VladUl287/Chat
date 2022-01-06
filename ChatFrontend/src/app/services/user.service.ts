@@ -41,7 +41,7 @@ export class UserService {
   }
 
   deleteFriend(id: number): Observable<null> {
-    return this.http.delete<null>(`${this.apiUrl}/api/friend/delete/${id}`);
+    return this.http.delete<null>(`${this.apiUrl}/api/friend/${id}`);
   }
 
   search(login: string): Observable<User[]> {
