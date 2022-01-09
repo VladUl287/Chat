@@ -1,9 +1,9 @@
 <div class="container">
     <div class="search-wrap">
         <div>
-            <input type="text" [(ngModel)]="searchUser" (ngModelChange)="search()" placeholder="поиск">
+            <input type="text" [(ngModel)]="login" (ngModelChange)="search()" placeholder="поиск">
             <div class="load"></div>
         </div>
     </div>
-    <app-users [users$]="repUsers$"></app-users>
+    <app-users [users$]="users$"></app-users>
 </div>

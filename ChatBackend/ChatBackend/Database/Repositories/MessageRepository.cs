@@ -38,7 +38,7 @@ namespace ChatBackend.Database.Repositories
             dbContext.Messages.RemoveRange(messagess);
         }
 
-        public async Task<List<Message>> GetMessages(int dialogId)
+        public async Task<IEnumerable<Message>> GetMessages(int dialogId)
         {
             return await dbContext.Messages
                 .AsNoTracking()

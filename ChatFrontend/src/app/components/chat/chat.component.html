@@ -58,7 +58,7 @@
                         </div>
                         <p class="message-time rg">{{message.dateCreate | date: 'HH:mm dd/MM/yyyy' }}</p>
                     </div>
-                    <div *ngIf="i == messages.length - 1" class="scroll" hidden>{{scrollToBottom()}}</div>
+                    <div *ngIf="i == messages$.value.length - 1" class="scroll" hidden>{{scrollToBottom()}}</div>
                 </div>
             </div>
         </div>

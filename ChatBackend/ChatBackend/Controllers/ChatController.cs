@@ -103,7 +103,9 @@ namespace ChatBackend.Controllers
         [HttpDelete("dialog/{id}")]
         public async Task<IActionResult> DeleteDialog([FromRoute] int id)
         {
-            await dialogRepository.DeleteDialog(id);
+            var userId = int.Parse(User.Identity.Name);
+
+            await dialogRepository.DeleteDialog(userId, id);
 
             return Ok();
         }

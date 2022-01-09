@@ -14,6 +14,7 @@ using SixLabors.ImageSharp.Processing;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,7 +44,13 @@ namespace ChatAppServer.Controllers
 
             var user = await dbContext.Users
                 .AsNoTracking()
-                .Include(e => e.Role)
+                .Select(x => new 
+                { 
+                    x.Id,
+                    x.Email, 
+                    x.Password, 
+                    RoleName = x.Role.Name, 
+                })
                 .FirstOrDefaultAsync(e => e.Email == auth.Email);
 
             if (user is null || user.Password != passwordHash)
@@ -54,7 +61,7 @@ namespace ChatAppServer.Controllers
             var claims = new Claim[]
                 {
                     new Claim("email", user.Email),
-                    new Claim("role", user.Role.Name),
+                    new Claim("role", user.RoleName),
                     new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString()),
                 };
 
@@ -75,12 +82,11 @@ namespace ChatAppServer.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromForm] RegisterModel register)
         {
-            var user = await dbContext.Users
+            var exists = await dbContext.Users
                 .AsNoTracking()
-                .Include(e => e.Role)
-                .FirstOrDefaultAsync(e => e.Email == register.Email);
+                .AnyAsync(e => e.Email == register.Email);
 
-            if (user is not null)
+            if (exists)
             {
                 return BadRequest("Пользователь с таким email уже зарегистрирован.");
             }

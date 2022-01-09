@@ -21,7 +21,7 @@ export class UserPageComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private hub: HubService,
-    private token: TokenService,
+    private tokenService: TokenService,
     private userService: UserService,
     private actRouter: ActivatedRoute
   ) {}
@@ -30,43 +30,40 @@ export class UserPageComponent implements OnInit, OnDestroy {
     this.routeSub = this.actRouter.params.subscribe(
       (data: Params) => {
         let id: number = +data.id
-        if(id == this.token.token.id) {
+        if(id == this.tokenService.token.id) {
           this.router.navigateByUrl("");
           return;
         }
         this.userId = id;
+        this.getUser();
       });
-
-    this.getUser();
   }
 
   getUser(): void {
     this.userService.getUser(this.userId).toPromise()
-    .then((data: User) => {
-      this.user$.next(data);
-    })
-    .catch((data: HttpErrorResponse) => {
+      .then((data: User) => {
+        this.user$.next(data);
+      })
+      .catch((data: HttpErrorResponse) => {
         if(data.status === 404) {
           this.router.navigateByUrl("");
         }
       });
   }
 
-  addUser() {
-    this.hub.addFriend(this.userId);
-    this.getUser();
+  addUser(): void {
+    this.hub.addFriend(this.userId)
+      ?.then(_ => this.getUser()); 
   }
 
-  deleteFriend() {
+  deleteFriend(): void {
     this.userService.deleteFriend(this.userId).toPromise()
-      .then(_ => this.router.navigateByUrl("friends"));
+      .then(_ => this.getUser());
   }
 
-  accept() {
-    this.userService.accept(this.token.token.id, this.userId).toPromise()
-      .then(_ => {
-        this.getUser();
-      });
+  accept(): void {
+    this.userService.accept(this.tokenService.token.id, this.userId).toPromise()
+      .then(_ => this.getUser());
   }
 
   ngOnDestroy(): void {

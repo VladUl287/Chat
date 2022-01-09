@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { ReplaySubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { Dialog } from 'src/app/models/dialog';
 import { Message } from 'src/app/models/message';
 import { MessageModel } from 'src/app/models/messageModel';
@@ -17,9 +17,8 @@ import { TokenService } from 'src/app/services/token.service';
 })
 export class ChatComponent implements OnInit, OnDestroy {
   
-  public messages$: ReplaySubject<Array<Message>> = new ReplaySubject<Array<Message>>();
-  public selectedMessages: Array<number> = new Array<number>(); 
-  public messages: Array<Message> = new Array<Message>();
+  public messages$: BehaviorSubject<Array<Message>> = new BehaviorSubject<Array<Message>>([]);
+  public selectedMessages: Array<number> = new Array<number>();
   public userId: number = this.tokenService.token.id;
   public dialogView$: Promise<Dialog> | undefined;
   public users$: Promise<User[]> | undefined;
@@ -44,10 +43,12 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.getMessages();
       });
 
-      this.hub.connection.on("ReceiveMessage", (message: Message) => {
+    this.hub.connection.on("ReceiveMessage", (message: Message) => {
       this.acceptScroll = true;
-      this.messages.push(message);
-      this.messages$.next(this.messages);
+      let messages = this.messages$.value;
+      messages.push(message);
+      this.messages$.next(messages);
+
       if (this.userId != message.userId) {
         this.hub.checkDialog(this.dialogId);
         this.chatService.getCount(this.userId);
@@ -60,7 +61,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   private getMessages(): void {
     this.chatService.getMessages(this.dialogId).toPromise()
       .then((data: Message[]) => {
-          this.messages = data;
           this.messages$.next(data);
           this.chatService.getCount(this.userId);
         });
@@ -120,14 +120,13 @@ export class ChatComponent implements OnInit, OnDestroy {
   public toogleDeleteMode(enabled: boolean): void {
     this.isDeleteMode = enabled;
     if(!enabled) {
-      this.messages.forEach(message => message.isSelected = false);
+      this.messages$.value.forEach(message => message.isSelected = false);
       this.selectedMessages = [];
     }
   }
 
   public ngOnDestroy(): void {
     this.routeSub?.unsubscribe();
-    //??????
     this.hub.connection.off("ReceiveMessage");
     this.hub.connection.on("ReceiveMessage", (message: Message) => {
       if (message.userId != this.userId) {

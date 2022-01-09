@@ -25,6 +25,7 @@ namespace ChatBackend.Hubs
             this.chatRepository = chatRepository;
             this.dialogRepository = dialogRepository;
             this.friendRepository = friendRepository;
+            
         }
 
         public async Task SendMessage(MessageModel messageModel)
@@ -61,6 +62,7 @@ namespace ChatBackend.Hubs
             var userId = int.Parse(Context.User.Identity.Name);
 
             var connections = _connections.GetConnections(userId).ToList();
+
             if (connections.Count > 0)
             {
                 foreach (var connectionId in connections)

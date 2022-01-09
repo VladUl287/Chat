@@ -11,8 +11,8 @@ import { MessageModel } from '../models/messageModel';
 export class HubService {
   private static hubConnection: HubConnection | undefined;
   private static readonly apiUrl: string = environment.apiUrl;
-  public readonly isConnect: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
+  private readonly isConnect: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  
   constructor(private router: Router) {
     this.startConnection();
   }
@@ -57,49 +57,22 @@ export class HubService {
     this.isConnect.next(false);
   }
 
-  sendMessage(message: MessageModel) {
+  sendMessage(message: MessageModel): void {
     if (this.isConnect.value) {
       this.connection.invoke("SendMessage", message)
     }
-    else {
-      this.startConnection();
-      this.isConnect.subscribe(
-        (data: boolean) => {
-          if (data) {
-            this.connection.invoke("SendMessage", message);
-            this.isConnect.complete();
-          }
-        });
-    }
   }
 
-  addFriend(id: number): void {
+  addFriend(id: number): Promise<any> | null {
     if (this.isConnect.value) {
-      this.connection.invoke("AddFriend", id);
+     return this.connection.invoke("AddFriend", id);
     }
-    else {
-      this.isConnect.subscribe(
-        (data: boolean) => {
-          if (data) {
-            this.connection.invoke("AddFriend", id);
-            this.isConnect.complete();
-          }
-        });
-    }
+    return null;
   }
 
   checkDialog(dialogId: number): void {
     if (this.isConnect.value) {
       this.connection.invoke("CheckDialog", dialogId);
-    }
-    else {
-      this.isConnect.subscribe(
-        (data: boolean) => {
-          if (data) {
-            this.connection.invoke("CheckDialog", dialogId);
-            this.isConnect.complete();
-          }
-        });
     }
   }
 }

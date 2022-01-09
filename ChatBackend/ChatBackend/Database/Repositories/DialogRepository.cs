@@ -32,12 +32,30 @@ namespace ChatBackend.Database.Repositories
             return await query.CountAsync();
         }
 
-        public async Task DeleteDialog(int dialogId)
-        {
-            await dbContext.Database
-                .ExecuteSqlInterpolatedAsync($"DELETE FROM [Dialogs] WHERE [Id] = {dialogId}");
-        }
+        //public async Task DeleteDialog(int dialogId)
+        //{
+        //    await dbContext.Database
+        //        .ExecuteSqlInterpolatedAsync($"DELETE FROM [Dialogs] WHERE [Id] = {dialogId}");
+        //}
 
+        public async Task DeleteDialog(int userId, int dialogId)
+        {
+            var dialog = await dbContext.Dialogs.FindAsync(dialogId);
+
+            if (dialog is not null)
+            {
+                if (dialog.UserId != userId && dialog.IsMultiple)
+                {
+                    await dbContext.Database
+                        .ExecuteSqlInterpolatedAsync($"DELETE FROM [UsersDialogs] WHERE [UserId] = {userId} AND [DialogId] = {dialogId}");
+
+                    return;
+                }
+
+                await dbContext.Database
+                    .ExecuteSqlInterpolatedAsync($"DELETE FROM [Dialogs] WHERE [Id] = {dialogId}");
+            }
+        }
 
         public async Task<DialogModel> GetDialogView(int userId, int dialogId)
         {

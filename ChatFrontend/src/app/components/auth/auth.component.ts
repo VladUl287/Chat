@@ -13,6 +13,7 @@ import { HubService } from 'src/app/services/hub.service';
 export class AuthComponent implements OnInit {
   isLogin: boolean = true;
   image: File | null = null;
+  
   loginForm = new FormGroup({
     email: new FormControl(''),
     password: new FormControl('')
@@ -55,7 +56,7 @@ export class AuthComponent implements OnInit {
     let image = document.querySelector('.file-name')!;
     if(event.target.files[0]) {
       this.image = event.target.files[0];
-      image.innerHTML = this.image!.name.substring(0, 20) + "...";
+      image.innerHTML = this.image!.name;
     } else {
       image.innerHTML = '';
     }

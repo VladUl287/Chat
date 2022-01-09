@@ -12,7 +12,7 @@ namespace ChatBackend.Database.Interfaces
 
         Task DeleteMessages(int[] arrId);
 
-        Task<List<Message>> GetMessages(int dialogId);
+        Task<IEnumerable<Message>> GetMessages(int dialogId);
 
         Task<int> SaveChangesAsync();
     }

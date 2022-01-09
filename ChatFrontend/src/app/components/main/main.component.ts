@@ -11,8 +11,8 @@ import { UserService } from 'src/app/services/user.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainComponent implements OnInit {
-  public repUsers$: ReplaySubject<Array<User>> = new ReplaySubject<Array<User>>();
-  searchUser: string = '';
+  public users$: ReplaySubject<Array<User>> = new ReplaySubject<Array<User>>();
+  public login: string = '';
 
   constructor(
     private userService: UserService,
@@ -26,27 +26,22 @@ export class MainComponent implements OnInit {
     let userId: number = this.tokenService.token.id;
     this.userService.getUsers(userId).toPromise()
       .then((data: User[]) => {
-        this.repUsers$.next(data);
+        this.users$.next(data);
       });
   }
 
   search() {
-    if (this.searchUser.length === 0) {
+    if (this.login.length === 0) {
       this.getUsers();
     }
-    if (this.searchUser.length > 6 && this.repUsers$.observers.length == 0) {
+    if (this.login.length > 6 && this.users$.observers.length == 0) {
       return;
     }
-    if (this.searchUser.length > 2) {
-      let load = document.querySelector('.load');
-      load?.classList.add('loading');
-
-      this.userService.search(this.searchUser).toPromise()
+    if (this.login.length > 2) {
+      this.userService.search(this.login).toPromise()
         .then((data: User[]) => {
-          this.repUsers$.next(data)
+          this.users$.next(data)
         });
-
-      load?.classList.remove('loading');
     }
   }
 }
