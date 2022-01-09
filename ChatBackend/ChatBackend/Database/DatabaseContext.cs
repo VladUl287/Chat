@@ -5,7 +5,7 @@ namespace ChatBackend.Database
 {
     public class DatabaseContext : DbContext
     {
-        public DatabaseContext()
+        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
             Database.EnsureCreated();
         }
@@ -20,11 +20,9 @@ namespace ChatBackend.Database
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ChatNew7;Trusted_connection=true")
                 .LogTo(message =>
                 {
                     System.Console.WriteLine(message);
-                    System.Diagnostics.Debug.WriteLine(message);
                 });
         }
 
@@ -41,9 +39,6 @@ namespace ChatBackend.Database
                 build.Property(e => e.Email)
                     .IsRequired()
                     .HasMaxLength(150);
-
-                build.HasIndex(e => e.Email)
-                    .IsUnique();
 
                 build.Property(e => e.Password)
                     .IsRequired()
@@ -114,9 +109,12 @@ namespace ChatBackend.Database
                 build.Property(e => e.Name)
                     .HasMaxLength(150);
 
+                build.Property(e => e.IsMultiple)
+                    .IsRequired()
+                    .HasDefaultValue(false);
+
                 build.HasOne(e => e.User)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .WithMany();
             });
 
             modelBuilder.Entity<Message>(build =>
@@ -140,6 +138,10 @@ namespace ChatBackend.Database
 
                 build.HasOne(e => e.User)
                     .WithMany();
+
+                build.HasOne(e => e.Dialog)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.NoAction);
             });
         }
     }

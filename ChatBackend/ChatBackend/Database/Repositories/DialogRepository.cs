@@ -2,7 +2,6 @@
 using ChatBackend.Database.Interfaces;
 using ChatBackend.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,12 +30,6 @@ namespace ChatBackend.Database.Repositories
 
             return await query.CountAsync();
         }
-
-        //public async Task DeleteDialog(int dialogId)
-        //{
-        //    await dbContext.Database
-        //        .ExecuteSqlInterpolatedAsync($"DELETE FROM [Dialogs] WHERE [Id] = {dialogId}");
-        //}
 
         public async Task DeleteDialog(int userId, int dialogId)
         {

@@ -13,8 +13,6 @@ namespace ChatBackend.Database.Interfaces
 
         Task<IEnumerable<UserModel>> GetUsersDialog(int dialogId);
 
-        //Task DeleteDialog(int id);
-
         Task DeleteDialog(int userId, int dialogId);
 
         Task<int> CountDialogs(int userId);

@@ -44,7 +44,6 @@ C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\runtimes\win-x86\native\Mi
 C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.pdb
 C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
-C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.csproj.AssemblyReference.cache
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.GeneratedMSBuildEditorConfig.editorconfig
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.AssemblyInfoInputs.cache
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.AssemblyInfo.cs
@@ -60,3 +59,7 @@ C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ref\ChatBackend.dll
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.pdb
 C:\Temp\Chat\ChatBackend\ChatBackend\obj\Debug\net5.0\ChatBackend.genruntimeconfig.cache
+C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Microsoft.Extensions.Options.dll
+C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\Microsoft.Extensions.Primitives.dll
+C:\Temp\Chat\ChatBackend\ChatBackend\bin\Debug\net5.0\System.Runtime.CompilerServices.Unsafe.dll

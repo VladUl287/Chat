@@ -6,6 +6,7 @@ using ChatBackend.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,7 +30,10 @@ namespace ChatBackend
         {
             services.AddSignalR();
 
-            services.AddDbContext<DatabaseContext>();
+            services.AddDbContext<DatabaseContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            });
 
             services.AddAutoMapper(typeof(Startup));
 

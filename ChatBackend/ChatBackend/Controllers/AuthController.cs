@@ -1,19 +1,16 @@
 ﻿using AutoMapper;
 using ChatAppModels;
+using ChatBackend;
 using ChatBackend.Database;
 using ChatBackend.ViewModels;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.Processing;
 using System;
+using System.Buffers;
 using System.IdentityModel.Tokens.Jwt;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -44,12 +41,12 @@ namespace ChatAppServer.Controllers
 
             var user = await dbContext.Users
                 .AsNoTracking()
-                .Select(x => new 
-                { 
+                .Select(x => new
+                {
                     x.Id,
-                    x.Email, 
-                    x.Password, 
-                    RoleName = x.Role.Name, 
+                    x.Email,
+                    x.Password,
+                    RoleName = x.Role.Name,
                 })
                 .FirstOrDefaultAsync(e => e.Email == auth.Email);
 
@@ -58,12 +55,11 @@ namespace ChatAppServer.Controllers
                 return BadRequest(error: "Неверный email или пароль.");
             }
 
-            var claims = new Claim[]
-                {
-                    new Claim("email", user.Email),
-                    new Claim("role", user.RoleName),
-                    new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString()),
-                };
+            var shared = ArrayPool<Claim>.Shared;
+            var claims = shared.Rent(3);
+            claims[0] = new Claim("email", user.Email);
+            claims[1] = new Claim("role", user.RoleName);
+            claims[2] = new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString());
 
             var secret = configuration.GetValue<string>("Secrets:JwtSecret");
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret));
@@ -75,6 +71,8 @@ namespace ChatAppServer.Controllers
                     signingCredentials: credentials);
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            shared.Return(claims);
 
             return Ok(new { token });
         }
@@ -95,7 +93,7 @@ namespace ChatAppServer.Controllers
 
             if (register.ImageFile.Length > 0)
             {
-                newUser.Image = await GetBase64(register.ImageFile, 160, 120);
+                newUser.Image = await ImageConverter.GetBase64(register.ImageFile, 160, 120);
             }
 
             string salt = configuration.GetValue<string>("Secrets:PasswordSalt");
@@ -105,19 +103,6 @@ namespace ChatAppServer.Controllers
             await dbContext.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        public static async Task<string> GetBase64(IFormFile image, int width, int height)
-        {
-            using var memoryStream = new MemoryStream();
-            await image.CopyToAsync(memoryStream);
-            memoryStream.Seek(0, SeekOrigin.Begin);
-            using var img = await Image.LoadAsync(memoryStream);
-            using var memory = new MemoryStream();
-            img.Mutate(x => x.Resize(width, height, KnownResamplers.Lanczos3));
-            await img.SaveAsync(memory, new JpegEncoder());
-            var fileBytes = memory.ToArray();
-            return $"data:image/jpeg;base64,{Convert.ToBase64String(fileBytes)}";
         }
 
         public static string HashPassword(string password, string salt)

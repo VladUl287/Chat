@@ -3,12 +3,7 @@ using ChatBackend.Database.Interfaces;
 using ChatBackend.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.Processing;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace ChatBackend.Controllers
@@ -36,9 +31,7 @@ namespace ChatBackend.Controllers
         [HttpGet("dialog/{userId}/{toUserId}")]
         public async Task<int> GetDialogIdentifier([FromRoute] int userId, [FromRoute] int toUserId)
         {
-            var dialog = await dialogRepository.GetDialogIdentifier(userId, toUserId);
-
-            return dialog;
+            return await dialogRepository.GetDialogIdentifier(userId, toUserId);
         }
 
         [HttpGet("dialog/{id}")]
@@ -46,9 +39,7 @@ namespace ChatBackend.Controllers
         {
             var userId = int.Parse(User.Identity.Name);
 
-            var dialog = await dialogRepository.GetDialogView(userId, id);
-
-            return dialog;
+            return await dialogRepository.GetDialogView(userId, id);
         }
 
         [HttpGet("dialog/users/{dialogId}")]
@@ -83,21 +74,13 @@ namespace ChatBackend.Controllers
 
             if (createDialog.FacialImage is not null && createDialog.FacialImage.Length > 0)
             {
-                using var memoryStream = new MemoryStream();
-                await createDialog.FacialImage.CopyToAsync(memoryStream);
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                using var img = await Image.LoadAsync(memoryStream);
-                using var memory = new MemoryStream();
-                img.Mutate(x => x.Resize(80, 60, KnownResamplers.Lanczos3));
-                await img.SaveAsync(memory, new JpegEncoder());
-                var fileBytes = Convert.ToBase64String(memory.ToArray());
-                dialog.Image = $"data:image/jpeg;base64,{fileBytes}";
+                dialog.Image = await ImageConverter.GetBase64(createDialog.FacialImage, 80, 60);
             }
 
             await dialogRepository.CreateDialog(dialog, createDialog.UsersId);
             await dialogRepository.SaveChangesAsync();
 
-            return Ok();
+            return CreatedAtRoute(nameof(GetDialog), new { id = dialog.Id }, dialog);
         }
 
         [HttpDelete("dialog/{id}")]
@@ -107,7 +90,7 @@ namespace ChatBackend.Controllers
 
             await dialogRepository.DeleteDialog(userId, id);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("messages")]
@@ -116,7 +99,7 @@ namespace ChatBackend.Controllers
             await messageRepository.DeleteMessages(arrId);
             await messageRepository.SaveChangesAsync();
 
-            return Ok();
+            return NoContent();
         }
     }
 }
